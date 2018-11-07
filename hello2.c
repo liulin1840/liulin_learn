@@ -26,7 +26,7 @@ int main(void)
         .score = 92,
     };
     show_student(&s2);
- 
+ git
     // method 3: 指定初始化，成员顺序可以不定
     struct student_st s3 = 
     {
