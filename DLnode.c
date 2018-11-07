@@ -81,6 +81,7 @@ int DlistInsertIndex(DLinkedList L,int i,int data)
     while(temp->next && n < i - 1)
     {
         temp = temp->next;
+        n++;
     }
     if(n < (i-1) || !temp)
     {
@@ -92,8 +93,9 @@ int DlistInsertIndex(DLinkedList L,int i,int data)
         perror("Dlist_creat_node err");
         return -1;
     }
+    // 数据放到temp的后面
     p->next = temp->next;
-    p->prior = temp->prior;
+    p->prior = temp;
     temp->next->prior = p;
     temp->next = p;
     return 0;
@@ -139,9 +141,11 @@ int main()
     for(int i = 100;i < 110;i++)
         DlistInsertTail(d_List,i);  //创建一个链表
 
-    printDLinkList(d_List);
+    //printDLinkList(d_List);
 
-    Dlist_insert_head(d_List,99);
+    //Dlist_insert_head(d_List,99);
+
+    DlistInsertIndex(d_List,2,70);
     printDLinkList(d_List);
     printf("hello\n");
     return 0;
