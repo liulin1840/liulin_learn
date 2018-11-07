@@ -12,7 +12,7 @@ typedef struct LNode
 	int data;
 	struct LNode * next;
 }LNode;
-
+////
 typedef struct DLNode
 {
 	int data;
