@@ -6,7 +6,7 @@ struct student_st
     int score;
     const char *name;
 };
- 
+// stu 是一个变量, 他的类型是个指针,指向的是一个结构体
 static void show_student(struct student_st *stu)
 {
     printf("c = %c, score = %d, name = %s\n", stu->c, stu->score, stu->name);
@@ -18,7 +18,7 @@ int main(void)
     struct student_st s1 = {'A', 91, "Alan"};
     show_student(&s1);
  
-    // method 2: 指定初始化，成员顺序可以不定，Linux 内核多采用此方式
+    // method 2: 指定初始化，成员顺序可以不定，Linux 内核多采用此方式,这个方式可以常用
     struct student_st s2 = 
     {
         .name = "YunYun",
