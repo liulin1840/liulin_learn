@@ -10,7 +10,7 @@ typedef struct node {
 }node,*linklist;
 
 
-
+// 用头插 创建链表
 void creat_list(linklist l, int n)
 {
     linklist p;
@@ -20,6 +20,7 @@ void creat_list(linklist l, int n)
     for (i = 0; i < n; i++)
     {
         p = (linklist)malloc(sizeof(node));
+        // 初始化的时候,就是个指针赋值,等价于插入
         p->data = i;
         p->next = l->next;
         l->next = p;
@@ -90,7 +91,7 @@ int listinsert(linklist l, int i, int e)
  */
 int listdelete(linklist l, int i, int *e)
 {
-    int j = 1;
+    int j      = 1;
     linklist p = NULL, q = NULL;
     p = l;
     while (p && j<i)
@@ -104,6 +105,8 @@ int listdelete(linklist l, int i, int *e)
     q = p->next;
     p->next = q->next;
     *e = q->data;
+
+    // 删除的是p的后继,
     free(q);
     return ok;
 }
