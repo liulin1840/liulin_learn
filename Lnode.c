@@ -3,7 +3,7 @@
 #define false 0
 #define ok 1
 
-
+// 结构体的定义,别名node ,后面定义了一个指针,指向这个结构体
 typedef struct node {
     int data;
     struct node *next;
@@ -11,7 +11,7 @@ typedef struct node {
 
 
 
-void creatlist(linklist l, int n)
+void creat_list(linklist l, int n)
 {
     linklist p;
     //去掉了l = (linklist)malloc(sizeof(node)); 
@@ -32,31 +32,45 @@ int getelem(linklist l, int i, int *e)
     int k = 1;
     linklist p = NULL;
     p = l->next;
-    while (p&&k<i)
+    while (p && k<i )
     {
         p = p->next;
         k++;
     }
     if (!p || k>i)
         return false;
+
     *e = p->data;
     return ok;
 }
 
-
+/**
+ * [listinsert description]
+ * @作者     liulin
+ * @时间     2018-11-07T15:28:04+0800
+ * @描述     在链表的第几个位置上插入数据
+ * @param  l                        传入头指针
+ * @param  i                        位置
+ * @param  e                        插入的值
+ * @return                          [description]
+ */
 int listinsert(linklist l, int i, int e)
 {
     int k = 1;
     linklist s = NULL, p = NULL;
+    // 接管头指针,
     p = l;
     int j = 1;
-    while (p&&j<i)
+    // 把指针移动到要插入位置的前面
+    while (p && j<i)
     {
         p = p->next;
         j++;
     }
-    if (!p || k>i)
+    if (!p || k> i)
         return false;
+
+    // 指针操作, 申请一个新节点,数据域指针与赋值,连接上去即可
     s = (linklist)malloc(sizeof(node));
     s->data = e;
     s->next = p->next;
@@ -64,19 +78,29 @@ int listinsert(linklist l, int i, int e)
     return ok;
 }
 
-
+/**
+ * [listdelete description]
+ * @作者     liulin
+ * @时间     2018-11-07T15:43:55+0800
+ * @描述     插入删除都要先找位置,然后执行指针操作
+ * @param  l                        [description]
+ * @param  i                        [description]
+ * @param  e                        [description]
+ * @return                          [description]
+ */
 int listdelete(linklist l, int i, int *e)
 {
     int j = 1;
     linklist p = NULL, q = NULL;
     p = l;
-    while (p&&j<i)
+    while (p && j<i)
     {
         p = p->next;
         j++;
     }
     if (!p->next || j>i)
         return false;
+    // q 为p的后继,
     q = p->next;
     p->next = q->next;
     *e = q->data;
@@ -84,24 +108,38 @@ int listdelete(linklist l, int i, int *e)
     return ok;
 }
 
-
-int seelist(linklist l)
+/**
+ * [see_list description]
+ * @作者     liulin
+ * @时间     2018-11-07T15:22:13+0800
+ * @描述     显示链表的信息,内容与长度
+ * @param  l                        [description]
+ * @return                          [description]
+ */
+int see_list(linklist l)
 {
+    // 条件判断接管头结点,不断的在大脑中回顾图像
+    // 定义链表的长度
     linklist p = NULL;
-    p = l->next;
-    int k = 0;
-    while (p)
-    {
+    int length = 0;
+
+    if(l->next != NULL){
+        p = l->next;
+    }
+
+    while (p){
         printf("%4d", p->data);
         p = p->next;
-        k++;
+        length++;
     }
-    printf("\n");
-    if (k == 0)
-    {
+
+    if (length == 0){
         printf("链表为空");
         return false;
+    }else {
+        printf("  链表的长度 = %d\n",length );
     }
+    printf("  \n");
     return ok;
 }
 
@@ -125,12 +163,12 @@ int main(void)
 {
     int a;
     linklist lb = (linklist)malloc(sizeof(node));//这里有变动！
-    creatlist(lb, 5);
-    seelist(lb);
+    creat_list(lb, 5);
+    see_list(lb);
     listinsert(lb, 2, 0);
-    seelist(lb);
-    listdelete(lb, 2, &a);
-    seelist(lb);
+    see_list(lb);
+    listdelete(lb, 4, &a);
+    see_list(lb);
     clearlist(lb);
     return 0;
 }
