@@ -11,7 +11,7 @@ static void show_student(struct student_st *stu)
 {
     printf("c = %c, score = %d, name = %s\n", stu->c, stu->score, stu->name);
 }
- 
+// 
 int main(void)
 {
     // method 1: 按照成员声明的顺序初始化
@@ -26,7 +26,6 @@ int main(void)
         .score = 92,
     };
     show_student(&s2);
- git
     // method 3: 指定初始化，成员顺序可以不定
     struct student_st s3 = 
     {
