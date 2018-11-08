@@ -101,9 +101,9 @@ int listdelete(linklist l, int i, int *e)
     if (!p->next || j>i)
         return false;
     // q 为p的后继,
-    q = p->next;
-    p->next = q->next;
-    *e = q->data;
+    q      = p->next;
+    p->next= q->next;
+    *e     = q->data;
 
     // 删除的是p的后继,
     free(q);
@@ -181,9 +181,9 @@ int main(void)
     linklist lb = (linklist)malloc(sizeof(node));
     creat_list(lb, 5);
     see_list(lb);
-    listinsert(lb, 2, 0);
+    listinsert(lb, 2, 7);
     see_list(lb);
-    //listdelete(lb, 4, &a);
+    listdelete(lb, 4, &a);
     revers(lb);
     see_list(lb);
     clearlist(lb);
