@@ -14,7 +14,6 @@ typedef struct node {
 void creat_list(linklist l, int n)
 {
     linklist p;
-    //去掉了l = (linklist)malloc(sizeof(node)); 
     l->next = NULL;
     int i;
     for (i = 0; i < n; i++)
@@ -153,6 +152,7 @@ int clearlist(linklist l)
     p = l->next;
     while (p)
     {
+        // 保存后继,删除前驱
         q = p->next;
         free(p);
         p = q;
@@ -160,17 +160,31 @@ int clearlist(linklist l)
     l->next = NULL;
     return ok;
 }
+// l->next 指向第一个元素,l->next  为空
+// 保存前趋, 进行头插,则链表逆置
+void revers(linklist l){
+    linklist q= NULL;
+    linklist p= l->next;
+    l->next   = NULL; 
+    while(p){
+        q = p;
+        p = p->next;
 
-
+        // 对他的前趋进行操作,如果不保存则会指针丢失,断链.
+        q->next = l->next;
+        l->next = q;    
+    }
+}
 int main(void)
 {
     int a;
-    linklist lb = (linklist)malloc(sizeof(node));//这里有变动！
+    linklist lb = (linklist)malloc(sizeof(node));
     creat_list(lb, 5);
     see_list(lb);
     listinsert(lb, 2, 0);
     see_list(lb);
-    listdelete(lb, 4, &a);
+    //listdelete(lb, 4, &a);
+    revers(lb);
     see_list(lb);
     clearlist(lb);
     return 0;
