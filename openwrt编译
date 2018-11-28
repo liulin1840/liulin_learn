@@ -1,1 +1,10 @@
 make package/network/services/zk-audit/{clean,compile} V=s
+
+# 在openwrt环境下进行编译
+make package/network/utils/nlbwmon/{clean,compile} V=s
+
+#D:\GIT\2018_dev\zk_openwrt\openwrt\package\network\utils\nlbwmon\src\utils.c
+
+git for-each-ref --format='%(committerdate) %09 %(authorname) %09 %(refname)' | sort -k5n -k2M -k3n -k4n
+
+git branch -d remotes/origin/2

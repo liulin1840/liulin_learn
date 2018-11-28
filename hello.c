@@ -38,6 +38,7 @@ int findElem(Sqlist L,int x)
 			return i;
 		/* code */
 	}
+	
 	return i;
 }
 
