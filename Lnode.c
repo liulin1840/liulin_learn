@@ -9,7 +9,7 @@ typedef struct node {
     struct node *next;
 }node,*linklist;
 
-
+// 要理解指针赋值  
 // 用头插 创建链表
 void creat_list(linklist l, int n)
 {
@@ -20,9 +20,9 @@ void creat_list(linklist l, int n)
     {
         p = (linklist)malloc(sizeof(node));
         // 初始化的时候,就是个指针赋值,等价于插入
-        p->data = i;
-        p->next = l->next;
-        l->next = p;
+        p->data = i;        // 数据域赋值
+        p->next = l->next;  // 指针赋值
+        l->next = p;        // 头插进去
     }
 }
 
@@ -149,10 +149,11 @@ int see_list(linklist l)
 int clearlist(linklist l)
 {
     linklist p = NULL, q = NULL;
+    // l->next 指向第一个元素
     p = l->next;
     while (p)
     {
-        // 保存后继,删除前驱
+        // 保存后继,删除前驱, p表示前趋, q表示后继 
         q = p->next;
         free(p);
         p = q;
@@ -164,11 +165,11 @@ int clearlist(linklist l)
 // 保存前趋, 进行头插,则链表逆置
 void revers(linklist l){
     linklist q= NULL;
-    linklist p= l->next;
-    l->next   = NULL; 
+    linklist p= l->next; // p是个临时接管的指针变量
+    l->next   = NULL;    // 第一个元素清空, 然后进行头插, 就逆序了
     while(p){
-        q = p;
-        p = p->next;
+        q = p;           // 取第一个元素
+        p = p->next;     // p 继续向下走
 
         // 对他的前趋进行操作,如果不保存则会指针丢失,断链.
         q->next = l->next;

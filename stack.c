@@ -17,12 +17,13 @@ SeqStack *initStack(){
 }
 
 /*进栈*/
+// 进栈就是给数组赋值,
 void push( SeqStack *s, int x ){
     if( s->top >= MAXSIZE-1 ){  //判断栈满 
         printf("栈满!"); 
     }else{
-        s->top++;   
-        s->data[s->top] = x;        
+        s->top++;            // 栈顶元素加一,
+        s->data[s->top] = x; // 然后赋值         
     }
 } 
 
