@@ -8,3 +8,11 @@ make package/network/utils/nlbwmon/{clean,compile} V=s
 git for-each-ref --format='%(committerdate) %09 %(authorname) %09 %(refname)' | sort -k5n -k2M -k3n -k4n
 
 git branch -d remotes/origin/2
+
+cd openwrt/build_dir/
+
+rm target-x86_64_uClibc-0.9.33.2/ -rf
+rm toolchain-x86_64_gcc-4.8-linaro_uClibc-0.9.33.2/ -rf
+
+cp include/ -rpf ~/zk_openwrt/openwrt/staging_dir/toolchain-mipsel_1004kc+dsp_gcc-4.8-linaro_uClibc-0.9.33.2/
+

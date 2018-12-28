@@ -1,0 +1,1 @@
+ DELETE FROM audit_term_basic  WHERE  start_time <'1541469680';

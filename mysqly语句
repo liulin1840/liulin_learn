@@ -1,0 +1,32 @@
+ DELETE FROM audit_term_basic  WHERE  term_id <'10';
+ mysql -u root -p123456 wacs_db </etc/audit.sql
+ DELETE FROM audit_term_basic  WHERE  start_time <'1541469680';
+
+ mysql -u root -p123456 wacs_db </etc/delete_term_basic.sql 
+
+ delete from audit_term_basic where term_id < 17035;
+
+检测增加索引后的效果
+
+ALTER TABLE `audit_term_basic` ADD INDEX index_name_d ( `start_time` )
+
+select login_id from audit_login_record limit 1;
+
+select start_time from audit_term_basic where term_id=14036001;
+
+select term_id from audit_term_basic limit 1;
+
+is marked as crashed and should be re 
+Abortedcd /e
+
+'./wacs_db/audit_view_record' is marked as crashed and should be repaired
+Table './wacs_db/audit_view_record' is marked as crashed and should be repaired
+
+ALTER TABLE tbl_name MAX_ROWS=1000000000 AVG_ROW_LENGTH=15000;
+
+[root@robert test]# cd /data/mysql/mysql_3306/data/test
+[root@robert test]# myisamchk -dv t2
+
+myisamchk --recover --quick /audit_data/audit_view_ex_record.MYI
+
+myisamchk -c -r ../data/dedecmsv4/dede_archives.MYI

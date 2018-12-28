@@ -18,6 +18,7 @@ typedef struct
     QNode *rear;
 } LinkQueue;
 
+
 Status InitQueue(LinkQueue *Q)
 {
     Q->front = Q->rear = (QNode *)malloc(sizeof(QNode));
