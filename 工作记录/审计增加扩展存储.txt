@@ -22,3 +22,4 @@
           3   显示未格式化的新磁盘
           /dev/sdb /audit_data ext4 defaults 0 0
  搜索命令:grep factory * -rn
+ 

@@ -1,0 +1,43 @@
+2019年02月12日
+1 需要规划学习任务
+  vim 的熟练运用，各种快捷键的掌握
+  记笔记，命令进行脚步化执行，简单化
+  shift + insert 可以进行粘贴操作
+    1  ssh root@10.10.10.254
+    2  apt install net-tools
+    5  df -h
+    7  free -h
+    8  wget -qO- https://raw.github.com/ma6174/vim/master/setup.sh |sh -x
+    9  cat /proc/cpuinfo
+   11  apt install git
+   12  git clone https://github.com/wszqkzqk/deepin-wine-ubuntu
+   13  wget -qO- https://raw.githubusercontent.com/wszqkzqk/deepin-wine-ubuntu/master/online_install.sh | bash -e
+   20  find / -name '*deepin*'
+   31  git clone https://gitee.com/wszqkzqk/deepin-wine-for-ubuntu.git
+   42  apt install gdebi-core
+   43  wget https://download.teamviewer.com/download/linux/teamviewer_amd64.deb
+   44  apt-get remove sublime-text-installer
+   45  apt-get install sublime-text-installer
+   46  wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+   48  apt-get install apt-transport-https
+   49  echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+   51  sudo apt-get install sublime-text
+   52  git clone https://github.com/lyfeyaj/sublime-text-imfix.git
+   58  apt-get install openssh-client
+   59  apt-get install openssh-service
+   60  service ssh start
+   67  vim /etc/ssh/sshd_config
+   68  service sshd restart
+   69  vim /etc/ssh/sshd_config
+   70  service sshd restart
+   81  wget -qO- https://raw.github.com/ma6174/vim/master/setup.sh |sh -x
+   87  sudo apt install gdebi build-essential
+   88  sudo /sbin/vboxconfig
+   92  /etc/init.d/virtualbox restart
+  115  ls -l /dev/ttyUSB*
+  116  sudo minicom
+  117  ls -l /dev/ttyUSB*
+  118  cat /dev/ttyUSB0
+  123  dmesg | grepttyS*
+  148  history
+
