@@ -1,8 +1,8 @@
 /*****************************************************
-@Copyright (c) 2015-2016 WAYOS.Co.Ltd. All rights reserved
+@Copyright (c) 2015-2016 GUN. All rights reserved
 @Auther    : miaomiao
-@Department: R&D
-@E-mail	   : chenjinhan@wayos.cn
+@Department: GUN
+@E-mail	   : 545911533@qq.com
 ******************************************************/
 #ifndef _DEBUG_H
 #define _DEBUG_H "debug.h"

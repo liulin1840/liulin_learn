@@ -1,7 +1,7 @@
 /*****************************************************
 @Copyright (c) 2015-2016 GUN. All rights reserved
 @Auther    : miaomiao
-@Department: R&D
+@Department: GUN
 @E-mail	   : 545911533@qq.com
 ******************************************************/
 #ifndef _MEM_H
