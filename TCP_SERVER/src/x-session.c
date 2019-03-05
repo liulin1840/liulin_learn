@@ -1,8 +1,8 @@
 /*****************************************************
-@Copyright (c) 2016 WAYOS.Co.,Ltd. All rights reserved
-@Auther    : Jeaham Chain
-@Department: R&D
-@E-mail	   : chenjinhan@wayos.cn
+@Copyright (c) 2016 GUN. All rights reserved
+@Auther    : miaomiao
+@Department: GUN
+@E-mail	   : 545911533@qq.com
 ******************************************************/
 #include <string.h>
 #include <assert.h>
@@ -30,7 +30,7 @@
 #define HTTP_EOF	"\r\n\r\n"
 #define HTTP_SEOF	"\r\n"
 
-#define X_SERVER "X-server/1.0 by Jeaham Chain"
+#define X_SERVER "X-server/1.0 by miaomiao"
 #define X_MAX_ERR_PAGE_LEN 1024
 
 #define CHAR_QUESTION_MARK	0X3F

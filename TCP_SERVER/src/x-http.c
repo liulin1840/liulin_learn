@@ -1,8 +1,8 @@
 /*****************************************************
-@Copyright (c) 2016 WAYOS.Co.,Ltd. All rights reserved
-@Auther    : Jeaham Chain
-@Department: R&D
-@E-mail	   : chenjinhan@wayos.cn
+@Copyright (c) 2016 GUN. All rights reserved
+@Auther    : miaomiao
+@Department: GUN
+@E-mail	   : 545911533@qq.com
 ******************************************************/
 #include <fcntl.h>
 #include <sys/socket.h>
