@@ -1,0 +1,51 @@
+﻿
+WEB登陆：
+
+亿互联新平台
+http://ap1.1hulian.cn:8090/wacs-mana/index.do
+admin
+1hulian802
+
+运营平台
+http://wifi.zkgcloud.com:8090/wacs-mana/index.do
+WEB网页：
+admin
+z,k;1^8*
+
+测试平台
+http://wifitest.zkgcloud.com:8090/wacs-mana/index.do
+网页：
+admin
+admin123
+
+云南平台 
+http://ynap.yhulian.cn/wacs-mana/
+superman  superman@qazwsx
+
+
+SSH:
+
+云南平台 root P_O)I(U*asd!@#
+
+1hulian  root #ap1$cac$pwd#
+
+1hulian备机  地址：183.61.189.101    root EHLian&&100*Photo
+数据库：mysql数据库：
+	端口：3306
+	账号：root
+	密码：Ehulian&1<Data101
+
+	sudoer
+
+	183.61.189.101
+	22
+	ehulian
+	uLian&&101*ZaDB
+
+运营平台 root #zkwifi01$cac$pwd#
+
+测试平台 root #zktest02$cac$pwd#
+
+拓达海外平台  47.88.54.22  root  Toda8681821
+
+网关ssh : root  B&np%!Z4
