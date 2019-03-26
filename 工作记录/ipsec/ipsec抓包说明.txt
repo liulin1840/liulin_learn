@@ -1,0 +1,55 @@
+
+root@WR5-4G:~# tcpdump -ni eth2 port 4500
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth2, link-type EN10MB (Ethernet), capture size 65535 bytes
+10:35:20.967712 IP 10.145.170.245.4500 > 171.88.21.82.4500: UDP-encap:ESP(spi=0x0699058c,seq=0x5a), length 92
+10:35:21.006020 IP 171.88.21.82.4500 > 10.145.170.245.4500: UDP-encap: ESP(spi=0x07b26efd,seq=0x5a), length 92
+10:35:21.970724 IP 10.145.170.245.4500 > 171.88.21.82.4500: UDP-encap: ESP(spi=0x0699058c,seq=0x5b), length 92
+10:35:22.005989 IP 171.88.21.82.4500 > 10.145.170.245.4500: UDP-encap: ESP(spi=0x07b26efd,seq=0x5b), length 92
+10:35:22.975702 IP 10.145.170.245.4500 > 171.88.21.82.4500: UDP-encap: ESP(spi=0x0699058c,seq=0x5c), length 92
+10:35:23.010995 IP 171.88.21.82.4500 > 10.145.170.245.4500: UDP-encap: ESP(spi=0x07b26efd,seq=0x5c), length 92
+
+# 在WAN口抓4500端口nat穿越的包,
+
+var/racoon.conf
+path pidfile "/var/racoon/racoon.pid";
+padding { maximum_length 20; randomize off; strict_check off; exclusive_tail off; }
+timer { counter 5; interval 20 sec; persend 1; phase1 30 sec; phase2 15 sec; }
+
+listen {
+  isakmp 10.10.10.73 [500]; isakmp_natt 10.10.10.73 [4500];
+}
+log debug;
+remote "tunnel_ddd" {
+  remote_address 116.228.41.146;
+  script "p1client-up" phase1_up;
+  script "p1client-down" phase1_down;
+  ph1id 1;
+  my_identifier fqdn "@266";
+  peers_identifier fqdn "@A";
+  exchange_mode main;
+  nat_traversal on;
+  proposal_check obey;
+  weak_phase1_check on;
+  verify_identifier on;
+  dpd_delay 10;
+  initial_contact off;
+  proposal {
+    lifetime time 86400 sec;
+    encryption_algorithm 3des;
+    hash_algorithm sha1;
+    authentication_method pre_shared_key;
+    dh_group modp1024;
+  }
+}
+sainfo address 10.60.162.1/24 any address 192.1.5.1/24 any {
+  remoteid 1;
+  pfs_group 1;
+  lifetime time 28800 sec;
+  encryption_algorithm 3des;
+  authentication_algorithm hmac_sha1;
+  compression_algorithm deflate;
+}
+psk.txt
+116.228.41.146 ly64174248
+增加两端的标识,主模式下操作,
