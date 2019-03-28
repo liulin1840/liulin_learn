@@ -53,3 +53,5 @@ sainfo address 10.60.162.1/24 any address 192.1.5.1/24 any {
 psk.txt
 116.228.41.146 ly64174248
 增加两端的标识,主模式下操作,
+修改
+https://wiki.strongswan.org/projects/strongswan 官网地址

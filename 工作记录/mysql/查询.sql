@@ -30,4 +30,4 @@ ALTER TABLE `nas_device` ENGINE =MyISAM;
 #执行sql脚本
 mysql -u root -p123456 wacs_db </etc/config/ac_templet.sql
 
-
+repair tables ac_status
