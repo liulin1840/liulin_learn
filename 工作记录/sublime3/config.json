@@ -1,0 +1,7 @@
+{
+ "align_indent": false,
+ "alignment_chars": ["=", ":"],
+ "alignment_space_chars": ["=", ":"],
+ "jsdocs_extra_tags":["@Author liulin","@DateTime {{datetime}}"]
+
+}

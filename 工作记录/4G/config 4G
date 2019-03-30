@@ -18,3 +18,6 @@ config 4G
         option ErrDesc 'Service not available (RegDescr: Unregistered, Seaching)'
         option base_status 'Modem OK. SIM OK. Service not available (RegDescr: Unregistered, Seaching)'
         option single_level '3'
+代做事项:
+        页面出错后无法正常显示,
+        1806上屏蔽ppp拨号上网
