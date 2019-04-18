@@ -31,3 +31,14 @@ ALTER TABLE `nas_device` ENGINE =MyISAM;
 mysql -u root -p123456 wacs_db </etc/config/ac_templet.sql
 
 repair tables ac_status
+
+(3). 并发插入
+
+MyISAM存储引擎有个系统变量 concurrent_insert，专门用来控制并发插入的行为，可以取 0 ， 1 ， 2。
+
+0表示不允许并发插入，1表示表中间没有删除的行时可以在表末尾插入，2表示总是可以插入。
+
+一般如果对并发要求比较高的情况下，可以设置为2，总是可以插入，然
+后定期在数据库空闲时间对表进行optimize
+
+CHECK TABLE t1;

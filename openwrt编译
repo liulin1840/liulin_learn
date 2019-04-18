@@ -16,3 +16,6 @@ rm toolchain-x86_64_gcc-4.8-linaro_uClibc-0.9.33.2/ -rf
 
 cp include/ -rpf ~/zk_openwrt/openwrt/staging_dir/toolchain-mipsel_1004kc+dsp_gcc-4.8-linaro_uClibc-0.9.33.2/
 
+cp package/kernel/appaudit/src/xt_appid/xt_appid.h  staging_dir/target-mipsel_24kc_musl/usr/include/
+
+

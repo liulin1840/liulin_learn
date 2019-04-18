@@ -22,4 +22,12 @@
           3   显示未格式化的新磁盘
           /dev/sdb /audit_data ext4 defaults 0 0
  搜索命令:grep factory * -rn
+
+1 增加设备管理刷新按钮,修复数据库   
+2 debug用户增加命令 
+3 7621增加shellbox 
+4 新增定时重启
+5 修改远程连接状态显示
+6 dos显示增加单位提示
+7 vpn启动改为restart
  
