@@ -19,3 +19,8 @@ cp include/ -rpf ~/zk_openwrt/openwrt/staging_dir/toolchain-mipsel_1004kc+dsp_gc
 cp package/kernel/appaudit/src/xt_appid/xt_appid.h  staging_dir/target-mipsel_24kc_musl/usr/include/
 
 
+1.贴一个cjson的下载地址http://www.kyne.com.au/~mark/software/download/lua-cjson-2.1.0.tar.gz。
+在linux当前目录下直接wget http://www.kyne.com.au/~mark/software/download/lua-cjson-2.1.0.tar.gz6
+解压到当前目录tar zxvf lua-cjson-2.1.0.tar.gz
+然后cd lua-cjson-2.1.0
+直接make(如何make不过，确认是否安装了lua-devel，安装方法直接sudo yum install lua-devel)

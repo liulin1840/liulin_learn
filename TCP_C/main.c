@@ -75,7 +75,7 @@ void an_exit(int line, int flag)
 /// 
 /// @param _in signo->信号量
 /// @return void->无返回值
-/// @author 陈瑾寒
+/// @author xxx
 //---------------------------------------------------------------
 static void an_sigfunc(int signo)
 {
@@ -109,7 +109,7 @@ static void an_sigfunc(int signo)
 /// 
 /// @param void->无参
 /// @return void->无返回值
-/// @author 陈瑾寒
+/// @author xxx
 //---------------------------------------------------------------
 void an_signals_init(void)
 {
@@ -154,7 +154,7 @@ void an_poll_init(void)
 /// 
 /// @param _in fd->socket fd
 /// @return -1->failed,0->sucess
-/// @author 陈瑾寒
+/// @author xxx
 //---------------------------------------------------------------
 _s32 inline an_sock_noblock(int fd)
 {
@@ -230,7 +230,7 @@ ERR:
 /// 
 /// @param void->无参数
 /// @return -1->failed,0->sucess
-/// @author 陈瑾寒
+/// @author xxx
 //---------------------------------------------------------------
 _s32 an_udp_sock_init(void)
 {
@@ -289,7 +289,7 @@ ERR:
 /// 
 /// @param void->无参数
 /// @return void->无返回值
-/// @author 陈瑾寒
+/// @author xxx
 //---------------------------------------------------------------
 void an_udp_recv(void)
 {
@@ -332,7 +332,7 @@ OUT:
 /// @param _in buf->发送内容
 /// @param _in buf_len->buf长度
 /// @return -1->failed,0->sucess
-/// @author 陈瑾寒
+/// @author xxx
 //---------------------------------------------------------------
 _s32 an_udp_send(struct sockaddr_in * dest, void * buf, _s32 buf_len)
 {
@@ -607,7 +607,7 @@ OUT:
 /// 
 /// @param _in eno->错误值
 /// @return -1->不忽略,0->忽略
-/// @author 陈瑾寒
+/// @author xxx
 //---------------------------------------------------------------
 _s32 an_ignore_errno(_s32 eno)
 {
@@ -883,7 +883,7 @@ ERR:
 /// 
 /// @param void->无参数
 /// @return void->无返回值
-/// @author 陈瑾寒
+/// @author xxx
 //---------------------------------------------------------------
 void an_timer_init(void)
 {
@@ -900,7 +900,7 @@ void an_timer_init(void)
 /// 
 /// @param void->无参数
 /// @return -1->failed,0->sucess
-/// @author 陈瑾寒
+/// @author xxx
 //---------------------------------------------------------------
 _s32 an_database_init(void)
 {
@@ -993,7 +993,7 @@ void an_mem_init(void)
 /// 
 /// @param void->无参数
 /// @return -1->failed,0->sucess
-/// @author 陈瑾寒
+/// @author xxx
 //---------------------------------------------------------------
 _s32 an_init(void)
 {
@@ -1052,7 +1052,7 @@ OUT:
 /// 
 /// @param void->无参数
 /// @return 0->退出
-/// @author 陈瑾寒
+/// @author xxx
 //---------------------------------------------------------------
 _s32 main(_s32 argc, char** argv)
 {	

@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title class="i18n-text">ipsec_config_title</title>
+
+    <%+include/header%>
+    <link rel="stylesheet" href="/luci-static/resources/css/datepicker.css"/>
+</head>
+
+<body>
+<%+include/nav%>
+
+<div class="main-content display_none">
+    <%+include/help%>
+    <div class="page-content">
+        <div class="row">
+            <div class="col-xs-12 maindiv">
+                <div class="tabbable">
+                    <ul class="nav nav-tabs" id="myTab">
+                        <li class="active">
+                            <a data-toggle="tab" href="#tab_safe_policy" onclick="refresh()" class="i18n-text">ipsec_config_ipsec_tunnel</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="#tab_safe_alliance" class="i18n-text">ipsec_config_ipsec_state</a>
+                        </li>
+
+                    </ul>
+                    <div class="tab-content pb_10">
+                        <!-- 策略页面 -->
+                        <div id="tab_safe_policy" class="tab-pane in active">
+                            <div class="table-responsive">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <form class="form-horizontal" style="padding: 0 0 0;" id="remote_form_data">
+                                            <div class="width_f">
+                                                <div class="form-group" id="div_auth_proto">
+                                                    <label for="remote_status"
+                                                           class="col-sm-4 control-label i18n-text">ipsec_config_ipsec_enabled</label>
+                                                    <div class="col-sm-8 radiodiv">
+                                                        <input type="radio" id="remote_status1"
+                                                               class="remote_status newridio big-radio"
+                                                               name="ipsec_status" value="enable"><label
+                                                            for="remote_status1"></label><span
+                                                            class="radiospan i18n-text">ipsec_config_enabled</span>
+                                                        <input type="radio" id="remote_status2"
+                                                               class="remote_status newridio big-radio"
+                                                               name="ipsec_status" checked="" value="disabled"><label
+                                                            for="remote_status2"></label><span
+                                                            class="radiospan i18n-text">ipsec_config_disabled</span>
+                                                    </div>
+                                                   
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="txt_new_ag_password"
+                                                           class="col-sm-4 control-label"></label>
+                                                    <div class="col-sm-8" style="white-space: nowrap;">
+                                                        <button id='btn_ipsec_save' type="button"
+                                                                class="btn btn-sm btn-success">
+                                                                <i class="icon-save"></i>
+                                                                <span class="i18n-text">ipsec_config_confirm</span> 
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </form>
+                                        <table class="table table-striped table-bordered table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th colspan="6" rowspan="2" class="new_th">
+                                                    <div class="new_th_div">
+                                                        <div class="input-group">
+                                                            <span class="title_font i18n-text">ipsec_config_tunnel_list</span>
+                                                            <button class="btn btn-primary btn-sm ml_15" id="btn_new">
+                                                                <i class="icon-plus"></i>
+                                                                <span class="i18n-text">ipsec_config_add_tunnel</span>
+                                                            </button>
+                                                        </div>
+
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                        </table>
+                                        <table id="dataList"
+                                               class="table table-striped table-bordered table-hover tb_top">
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 联盟列表 -->
+                        <div id="tab_safe_alliance" class="tab-pane ">
+                            <div class="table-responsive">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="tabbable">
+                                <div id="tab_home" class="tab-pane in active">
+                                    <div class="table-responsive" >                                         
+                                    <table class="table table-striped table-bordered table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th colspan="6" rowspan="2" class="new_th">
+                                                    <div class="new_th_div">
+                                                        <div class="input-group">
+                                                            <span class="title_font i18n-text">ipsec_config_tunnel_state</span>
+                                                            <button class="btn btn-primary btn-sm ml_15 " id="get_sa_info"><i class="icon-refresh"></i><span class="i18n-text">ipsec_config_refresh</span></button>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                        </table>
+                                        <table id="dataList_status"
+                                               class="table table-striped table-bordered table-hover tb_top">
+                                        </table>
+                                </div>
+                        </div>
+                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- ipsec策略 添加策略弹窗 -->
+        <div id="modal_accountInfo" class="modal fade" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header no-padding">
+                        <div class="table-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                <span class="white">&times;</span>
+                            </button>
+                            <span id='win_title'></span>
+                        </div>
+                    </div>
+
+                    <div class="modal-body no-padding">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <!-- PAGE CONTENT BEGINS -->
+
+                                <form class="form-horizontal" role="form" id="frmRuleData">
+                                    <div class="space-8"></div>
+                                    <!-- 安全策略名称  -->
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label i18n-text" for="tunnel_name">ipsec_config_tunnel_name</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" id="tunnel_name" name='tunnel_name'
+                                                   class="col-xs-8 custom_input i18n-placeholder" placeholder="ipsec_config_tunnel_name_regservice" 
+                                                   onkeyup="value=value.replace(/[^\a-\z\A-\Z0-9\_]/g,'')" onpaste="value=value.replace(/[^\a-\z\A-\Z0-9\_]/g,'')" oncontextmenu = "value=value.replace(/[^\a-\z\A-\Z0-9\_]/g,'')"
+                                                            onpaste="return false" oncontextmenu="return false;" maxlength=20/>
+                                            <input type="hidden" id="old_tunnel_name"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- 启用安全策略 -->
+                                    <div class="form-group" style="display: block;">
+                                        <label for="enabled" class="col-sm-4 control-label i18n-text">ipsec_config_security_policy_enabled</label>
+                                        <div class="col-sm-8 radiodiv">
+                                            <input type="radio" id="rulestatus1" class="rulestatus newridio big-radio"
+                                                   name="enabled" value="1" ><label
+                                                for="rulestatus1"></label><span class="radiospan i18n-text">ipsec_config_enabled</span>
+                                            <input type="radio" id="rulestatus2" class="rulestatus newridio big-radio"
+                                                   name="enabled" checked="" value="0"><label
+                                                for="rulestatus2"></label><span class="radiospan i18n-text">ipsec_config_disabled</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- 组网模式 -->
+                                    <div class="form-group" style="display: block;">
+                                        <label class="col-sm-4 control-label i18n-text" for="network_mode">ipsec_config_network_mode</label>
+                                        <select class=" col-sm-7 col-xs-8 custom_input" id="network_mode"
+                                                style="width: 227px" onclick="do_net_mode_change()">
+                                            <option value="server" selected="true">Server</option>
+                                            <option value="client">Client</option>
+                                        </select>
+                                    </div>
+
+                                    <div id="client_div">
+                                        <!-- 对端网关 -->
+                                        <div class="form-group" id="remote_wan_div" style="display:block;">
+                                            <label class="col-sm-4 control-label i18n-text" for="remote" id="remote_host_ip">ipsec_config_remote_wan</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" id="remote" name="remote"
+                                                       class="col-xs-8 custom_input i18n-placeholder" placeholder="ipsec_config_remote_addr"/>
+                                            </div>
+                                        </div>
+                                         <!-- 传输模式 -->
+                                        <div class="form-group" style="display: none;">
+                                            <label class="col-sm-4 control-label i18n-text" for="transport_mode">ipsec_config_sa_mode</label>
+                                            <select class=" col-sm-7 col-xs-8 custom_input" id="transport_mode"
+                                                    style="width: 227px" ">
+                                                <option value="transport" class="i18n-text">ipsec_config_transport_mode</option>
+                                                <option value="tunnel" selected="true" class="i18n-text">ipsec_config_tunnel_mode</option>
+                                            </select>
+                                        </div>
+                                        <!-- 本地ip地址 -->
+                                        <div class="form-group" id="local_lan_ip_div">
+                                            <label class="col-sm-4 control-label i18n-text" for="local_subnet_ip">ipsec_config_local_subnet</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" id="local_subnet_ip" name="local_subnet_ip"
+                                                       class="col-xs-8 custom_input" />
+												<span style="padding: 5px">/</span>
+                                                  <input class="form-control" style="width:45px;display: inline-block;" name="local_subnet_mask" id="local_subnet_mask">
+                                            </div>
+                                        </div>
+
+                                        <!-- 对端ip地址 -->
+                                        <div class="form-group" id="remote_lan_ip_div">
+                                            <label class="col-sm-4 control-label i18n-text" for="remote_subnet_ip">ipsec_config_remote_subnet</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" id="remote_subnet_ip" name="remote_subnet_ip"
+                                                       class="col-xs-8 custom_input"  />
+												<span style="padding: 5px">/</span>
+                                                  <input class="form-control" style="width:45px;display: inline-block;" name="remote_subnet_mask" id="remote_subnet_mask">
+                                            </div>
+                                        </div>
+
+                                        <!-- 协商模式 -->
+                                        <div class="form-group">
+                                            <label for="exchange_mode" class="col-sm-4 control-label i18n-text">ipsec_config_exchange_moed</label>
+                                            <div class="col-sm-8 radiodiv">
+                                                <input type="radio" id="main_mode" class="rulestatus newridio big-radio"
+                                                       name="exchange_mode" value="main"><label
+                                                    for="main_mode"></label><span class="radiospan i18n-text">ipsec_config_main_mode</span>
+                                                <input type="radio" class="rulestatus newridio big-radio"
+                                                       name="exchange_mode" id="aggressive_mode" checked=""
+                                                       value="aggressive"><label for="aggressive_mode"></label><span
+                                                    class="radiospan i18n-text">ipsec_config_aggressive_mode</span>
+                                            </div>
+                                        </div>
+									</div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label i18n-text" for="authentication_method">ipsec_config_auth_mode</label>
+                                        <select class=" col-sm-7 col-xs-8 custom_input" id="authentication_method"
+                                                style="width: 227px" onchange="do_net_auth_change();">
+                                            <option value="rsasig" selected="true" class="i18n-text">ipsec_config_rsasig</option>
+                                            <option value="pre_shared_key" class="i18n-text">ipsec_config_pre_shared_key</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- 预共享密钥 -->
+                                    <div class="form-group" id="txt_ike_psk_div">
+                                        <label class="col-sm-4 control-label i18n-text" for="pre_shared_key">ipsec_config_pre_shared_key_lbl</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" id="pre_shared_key" name="pre_shared_key"
+                                                   class="col-xs-8 custom_input" maxlength="10" onkeyup="value=value.replace(/[^\a-\z\A-\Z0-9]/g,'')" onpaste="value=value.replace(/[^\a-\z\A-\Z0-9]/g,'')" oncontextmenu = "value=value.replace(/[^\a-\z\A-\Z0-9\]/g,'')"
+                                                   onpaste="return false" oncontextmenu="return false;" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" >
+                                        <label class="col-sm-4 control-label" >
+                                        </label>
+                                        <div class="col-sm-7">
+                                            <button id='advance' type="button" class="btn btn-sm btn-info"><i class="icon-plane"></i><span class="i18n-text">ipsec_config_advance_show</span></button>
+                                        </div>
+
+                                    </div>
+
+                                <div id="advance_div" style="display:none;">
+<!--------------------------------------------- 第一阶段参数设置 ------------------------------------------------------>
+                                    <div class="form-group" style="display: block">
+                                        <label class="col-sm-4 control-label" ></label>
+                                        <div class="col-sm-7">
+                                            <button id='default' type="button" class="btn btn-sm btn-info"><span class="i18n-text">ipsec_config_default_param</span></button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" style="display: block">
+                                        <label class="col-sm-4 control-label i18n-text" >ipsec_config_ike_param</label>
+                                    </div>
+
+                                    <!-- 加密算法 -->
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label i18n-text" for="ph1_encryption_algorithm">ipsec_config_encryption_algorithm</label>
+                                        <select class=" col-sm-7 col-xs-8 custom_input" id="ph1_encryption_algorithm"
+                                                style="width: 227px">
+                                            <option value="des">DES</option>
+                                            <option value="3des" selected="true">3DES</option>
+                                            <option value="blowfish">BLOWFISH</option>
+                                            <option value="cast128">CAST128</option>
+                                            <option value="aes">AES</option>
+                                            <option value="camellia">CAMELLIA</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- 验证算法 -->
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label i18n-text" for="ph1_hash_algorithm">ipsec_config_hash_algorithm</label>
+                                        <select class=" col-sm-7 col-xs-8 custom_input" id="ph1_hash_algorithm"
+                                                style="width: 227px">
+                                            <option value="md5" selected="true">MD5</option>
+                                            <option value="sha1">SHA1</option>
+                                            <option value="sha256">SHA256</option>
+                                            <option value="sha384">SHA384</option>
+                                            <option value="sha512">SHA512</option>
+                                        </select>
+                                    </div>
+
+
+                                    <!-- DH组 -->
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label i18n-text" for="dh_group">ipsec_config_dh_group</label>
+                                        <select class=" col-sm-7 col-xs-8 custom_input" id="dh_group"
+                                                style="width: 227px">
+                                            <option value="modp768" selected="true">GROUP1</option>
+                                            <option value="modp1024">GROUP2</option>
+                                            <option value="modp1536">GROUP5</option>
+                                            <option value="modp2048">GROUP14</option>
+                                            <option value="modp3072">GROUP15</option>
+                                            <option value="modp4096">GROUP16</option>
+                                            <!--       <option value="modp6144">modp6144</option>
+                                                  <option value="modp8192">modp8192</option> -->
+                                        </select>
+                                    </div>
+                                    <!-- 生存时间 -->
+                                    <div class="form-group" style="display: block;">
+                                        <label class="col-sm-4 control-label i18n-text" for="ph1_lifetime">ipsec_config_lifetime</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" id="ph1_lifetime" name="ph1_lifetime"
+                                                   value="86400" class="col-xs-8 custom_input"/>
+                                            <label class="control-label i18n-text">ipsec_config_lifetime_unit</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- DPD检测开启 -->
+                                    <div class="form-group" style="display: block;">
+                                        <label for="dpd_switch" class="col-sm-4 control-label i18n-text">ipsec_config_dpd_switch</label>
+                                        <div class="col-sm-8 radiodiv">
+                                            <input type="radio" id="dpd_1" class="rulestatus newridio big-radio"
+                                                   name="dpd_switch" value="enable"
+                                                   onclick="do_dpd_change()"><label for="dpd_1"></label><span
+                                                class="radiospan i18n-text">ipsec_config_enabled</span>
+                                            <input type="radio" id="dpd_2" class="rulestatus newridio big-radio"
+                                                   name="dpd_switch" checked="true" value="disabled"
+                                                   onclick="do_dpd_change()"><label for="dpd_2"></label><span
+                                                class="radiospan i18n-text">ipsec_config_disabled</span>
+                                        </div>
+                                    </div>
+                                    <!-- DPD检测周期 -->
+                                    <div class="form-group" style="display: block">
+                                        <label class="col-sm-4 control-label i18n-text" for="dpd_delay">ipsec_config_dpd_delay</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" id="dpd_delay" name="dpd_delay"
+                                                   class="col-xs-8 custom_input" value="10"/>
+                                            <label class="control-label i18n-text">ipsec_config_delay_unit</label>
+                                        </div>
+                                    </div>
+
+<!--------------------------------------------- 第二阶段参数设置 ------------------------------------------------------>
+                                    <div class="form-group" style="display: block">
+                                        <label class="col-sm-4 control-label i18n-text">ipsec_config_ipsec_param</label>
+
+                                    </div>
+                                    <!-- ESP加密算法 -->
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label i18n-text" for="ph2_encryption_algorithm">ipsec_config_encryption_algorithm</label>
+                                        <select class=" col-sm-7 col-xs-8 custom_input" id="ph2_encryption_algorithm"
+                                                style="width: 227px">
+                                            <option value="des" selected="true">DES</option>
+                                            <option value="aes">AES</option>
+                                            <option value="3des">3DES</option>
+                                            <option value="des_iv64">DES_IV64</option>
+                                            <option value="des_iv32">DES_IV32</option>
+                                            <option value="blowfish">BLOWFISH</option>
+                                            <option value="rijndael">RIJNDAEL</option>
+
+                                        </select>
+                                    </div>
+
+                                    <!-- ESP验证算法 -->
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label i18n-text" for="ph2_authentication_algorithm">ipsec_config_hash_algorithm</label>
+                                        <select class=" col-sm-7 col-xs-8 custom_input" id="ph2_authentication_algorithm"
+                                                style="width: 227px">
+                                            <!--  <option value="des" selected="true">DES</option>
+                                             <option value="3des">3DES</option> -->
+                                            <option value="hmac_md5" selected="true">MD5</option>
+                                            <option value="des_iv64">DES_IV64</option>
+                                            <option value="des_iv32">DES_IV32</option>
+                                            <option value="hmac_sha1">HMAC_SHA1</option>
+                                            <option value="hmac_sha256">HMAC_SHA256</option>
+                                            <option value="hmac_sha384">HMAC_SHA384</option>
+                                            <option value="hmac_sha512">HMAC_SHA512</option>
+                                            <option value="non_auth">NON_AUTH</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- PFS -->
+                                    <div class="form-group" style="display: block;">
+                                        <label class="col-sm-4 control-label i18n-text" for="pfs_group" >ipsec_config_pfs_group</label>
+                                        <select class=" col-sm-7 col-xs-8 custom_input" id="pfs_group"
+                                                style="width: 227px" name="range_length">
+                                            <option value="1" selected="true">GROUP1</option>
+                                            <option value="2">GROUP2</option>
+                                            <option value="5">GROUP5</option>
+                                            <option value="14">GROUP14</option>
+                                            <option value="15">GROUP15</option>
+                                            <option value="16">GROUP16</option>
+                                        </select>
+                                    </div>
+                                    <!-- 生存时间 -->
+                                    <div class="form-group" style="display: block;">
+                                        <label class="col-sm-4 control-label i18n-text" for="ph2_lifetime">ipsec_config_lifetime</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" id="ph2_lifetime" name="ph2_lifetime" value="28800"
+                                                   class="col-xs-8 custom_input"/><label class="control-label i18n-text">ipsec_config_lifetime_unit2</label>
+                                        </div>
+                                    </div>
+<!--------------------------------------------- 第二阶段参数设置结束 --------------------------------------------------->
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer no-margin-top">
+                        <button class="btn btn-sm btn-danger pull-right margin_l_10" data-dismiss="modal"><i class="icon-remove"></i><span class="i18n-text">ipsec_config_close</span></button>
+
+                        <button class="btn btn-sm btn-success pull-right" id="save_tunnel"><i class="icon-save"></i><span class="i18n-text">ipsec_config_save_tunnel</span></button>
+
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- PAGE CONTENT ENDS -->
+    </div>
+</div><!-- /.page-content -->
+</div><!-- /.main-content -->
+
+<%+include/footer%>
+
+<script src="/luci-static/resources/js/date-time/bootstrap-datepicker.min.js"></script>
+<script src="/luci-static/resources/js/date-time/locales/bootstrap-datepicker.zh-CN.js"></script>
+
+<!-- inline scripts related to this page -->
+
+<script type="text/javascript">
+    var queryParams = {};
+    var total_tunnel = 0
+
+    // 保存规则的id
+    var id = '';
+    var tabDatas
+    // 获取帮助信息
+    function help() {
+        $ips.loadData($ips.getBasePath() + '/admin/zksetting/wac_help', {classify:"ipsec_set"}, function (data) {
+            if (data.help_data) {
+                $('#help_data').html(data.help_data)
+            }
+        });
+    }
+    jQuery(function ($) {
+        help()
+        do_net_mode_change()
+        do_net_auth_change()
+        do_dpd_change()
+        get_sa_info()
+        $.extend($.validator.messages, {
+            required: $.i18n.prop("ipsec_config_validtor_required"),
+            remote: $.i18n.prop("ipsec_config_validtor_remote"),
+            email: $.i18n.prop("ipsec_config_validtor_email"),
+            url: $.i18n.prop("ipsec_config_validtor_url"),
+            date: $.i18n.prop("ipsec_config_validtor_date"),
+            dateISO: $.i18n.prop("ipsec_config_validtor_dateiso"),
+            number: $.i18n.prop("ipsec_config_validtor_number"),
+            digits: $.i18n.prop("ipsec_config_validtor_digits"),
+            extension: $.i18n.prop("ipsec_config_validtor_extension"),
+            maxlength: $.validator.format($.i18n.prop("ipsec_config_validtor_maxlenth_pre") + " {0} " + $.i18n.prop("ipsec_config_validtor_maxlenth_suf")),
+            range: $.validator.format($.i18n.prop("ipsec_config_validtor_range_pre") + " {0} " + $.i18n.prop("ipsec_config_validtor_range_to") + " {1} " + $.i18n.prop("ipsec_config_validtor_range_suf")),
+            max: $.validator.format($.i18n.prop("ipsec_config_validtor_max_pre") + " {0} " + $.i18n.prop("ipsec_config_validtor_max_suf")),
+            min: $.validator.format($.i18n.prop("ipsec_config_validtor_min_pre") + " {0} " + $.i18n.prop("ipsec_config_validtor_min_suf"))
+        });
+
+        // 获取ipsec 状态按钮
+        $ips.loadData($ips.getBasePath() + '/admin/vpn/get_ipsec_status', {}, function (data) {
+            if (data.code == 0) {
+                $("input[name='ipsec_status'][value='" + data.status + "']").prop('checked', true);
+            }
+        });
+
+        // 高级设置选项
+        $('#advance').click(function () {
+            if($('#advance_div').css("display") == 'none')
+            {
+                $('#advance_div').css("display", "block")
+                $("#advance").html($.i18n.prop("ipsec_config_advance_show"))
+            }else
+            {
+                $('#advance_div').css("display", "none")
+                $("#advance").html($.i18n.prop("ipsec_config_advance_hide"))
+            }
+        });
+
+
+        // 保存ipsec 状态按钮
+        $('#btn_ipsec_save').click(function () {
+            ipsec_save_obj =
+                {
+                    ipsec_status: $("input[name='ipsec_status']:checked").val(),
+                }
+            $ips.succeed($.i18n.prop("ipsec_config_action_succeed"));
+            $ips.loadData($ips.getBasePath() + '/admin/vpn/save_ipsec_status', ipsec_save_obj, function (data) {
+                if (data.code == 0) {
+                    $ips.succeed(data.message);
+                } else {
+                    $ips.error(data.message);
+                }
+            });
+
+        });
+
+
+        // 隧道列表
+        var url = $ips.getBasePath() + '/admin/vpn/get_tunnel_list';
+        $ips.loadTableData({
+            tableId: '#dataList',
+            ajaxUrl: url,
+            paging: false,
+            aoColumns: [
+                {"sName": "idx", "sTitle": $.i18n.prop("ipsec_config_list_idx"), "sWidth": "50px"},
+                {"sName": ".name", "sTitle": $.i18n.prop("ipsec_config_list_name")},
+                {"sName": "network_mode", "sTitle": $.i18n.prop("ipsec_config_list_network_mode")},
+                {"sName": "local_subnet_ip", "sTitle": $.i18n.prop("ipsec_config_list_local_subnet")},
+                {"sName": "remote_subnet_ip", "sTitle": $.i18n.prop("ipsec_config_list_remote_subnet")},
+                {"sName": "enabled", "sTitle": $.i18n.prop("ipsec_config_list_enabled"), "sWidth": "80px"},
+                {"sName": "tool", "sTitle": $.i18n.prop("ipsec_config_list_tool"), "sWidth": "70px"}
+            ],
+            pageSize: 10,
+            params: queryParams,
+            fnDrawCallback: function (api) {
+                var startIndex = api.context[0]._iDisplayStart;
+                api.column(0).nodes().each(function (cell, i) {
+                    cell.innerHTML = startIndex + i + 1;
+                });
+            },
+            fnCallback: function (data) {
+                var count = 0
+                $.each(data, function (i, item)
+				{
+
+                    item.enabled = item.enabled == '1' ? $.i18n.prop("ipsec_config_item_enabled") : $.i18n.prop("ipsec_config_item_disabled");
+					item.network_mode = item.network_mode == 'server' ? 'Server' : 'Client';
+					item.local_subnet_ip = item.local_subnet_ip + '/' + item.local_subnet_mask;
+					item.remote_subnet_ip = item.remote_subnet_ip + '/' + item.remote_subnet_mask;
+
+                    item.tool = '<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">' +
+                        '<a class="green link_modify" id="get_tunnel_info" data-id="' + item['.name'] + '" href="#"><i class="icon-pencil bigger-130"></i></a>' +
+                        '<a class="red link_delete" id="delete_tunnel" data-id="' + item['.name'] + '"><i class="icon-trash bigger-130"></i></a>' +
+                        '</div>';
+                });
+                return data;
+            }
+
+        });
+
+        // IPsec 状态列表
+        function get_sa_info()
+        {
+             tabDatas=$ips.loadTableData({
+                tableId: '#dataList_status',
+                ajaxUrl: $ips.getBasePath()+ '/admin/vpn/get_sa_info',
+                paging: true,
+                destroy: true,
+                aoColumns: [
+                    {"sName": "idx", "sTitle": $.i18n.prop("ipsec_config_list_idx"), "sWidth": "50px"},
+                    {"sName": "ip", "sTitle": $.i18n.prop("ipsec_config_list_ip")},
+                    {"sName": "state", "sTitle": $.i18n.prop("ipsec_config_list_state")},
+                    {"sName": "mode", "sTitle": $.i18n.prop("ipsec_config_list_mode")},
+                    {"sName": "created", "sTitle": $.i18n.prop("ipsec_config_list_created")},
+                    {"sName": "current", "sTitle": $.i18n.prop("ipsec_config_list_current")},
+                ],
+                pageSize: 10,
+                params: queryParams,
+                fnDrawCallback: function (api) {
+                    var startIndex = api.context[0]._iDisplayStart;
+                    api.column(0).nodes().each(function (cell, i) {
+                        cell.innerHTML = startIndex + i + 1;
+                    });
+                },
+                fnCallback: function (data) {
+                    $.each(data, function (i, item) {
+                         item.ip = item.ip.replace(" ","  →  ");
+                         if (typeof(item.current) !="undefined")
+                         {
+                            var data_byte = item.current.substring(0,item.current.indexOf("(")).trim()
+                            if (data_byte != '0')
+                            {
+                               item.current  = bytesToSize(data_byte)
+                            }
+                         }
+
+                        // item.iprange = item.range_ip + '/' + item.range_length;
+                    });
+                    return data;
+                }
+
+            });
+        }
+        $("#get_sa_info").click(function(){ tabDatas.ajax.reload( null, false );})
+        //  策略验证
+        var ruleValidator = $('#frmRuleData').validate({
+            rules: {
+                tunnel_name: {required: true, maxlength: 25},
+                local_subnet_ip: {required: true, ip: true},
+                remote_subnet_ip: {required: true, ip: true},
+                remote: {required: true,domain:true},
+                p1_proposal: {required: true},
+                lifetime: {range: [120, 604800]},
+            },
+
+            messages:
+                {
+                    tunnel_name: {required: $.i18n.prop("ipsec_config_tunnel_name_required"), maxlength: $.i18n.prop("ipsec_config_tunnel_name_maxlength")},
+                    local_subnet_ip: {required: $.i18n.prop("ipsec_config_local_subnet_required"), ip:  $.i18n.prop("ipsec_config_subnet_ip_error")},
+                    remote_subnet_ip: {required: $.i18n.prop("ipsec_config_remote_subnet_required"), ip: $.i18n.prop("ipsec_config_subnet_ip_error")},
+                    remote: {required: $.i18n.prop("ipsec_config_remote_required")},
+                    p1_proposal: {required: $.i18n.prop("ipsec_config_proposal_required")},
+                    lifetime: {required: $.i18n.prop("ipsec_config_lifetime_required"), range: $.i18n.prop("ipsec_config_lifetime_range")},
+                },
+            errorPlacement: function (error, element) {
+                if (element.hasClass('range_input')) {
+                    error.appendTo($('#range_error'));
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+        //恢复加密数据默认
+        $("#default").click(function(){
+            //-------------------------------加密部分设置默认值----------------------------------------------------
+            $("#ph1_encryption_algorithm").val("3des")                          // 第一阶段加密算法
+            $("#ph1_hash_algorithm").val("md5")                                 // 第一阶段验证算法
+            $("#dh_group").val("modp768")                                       // 第一阶段DH组
+            $("#ph1_lifetime").val("86400")                                     // 第一阶段密钥生命周期
+            $("#dpd_delay").val("10")                                           // DPD检测周期
+
+            $("#ph2_encryption_algorithm").val("des")                          // 第二阶段加密算法
+            $("#ph2_authentication_algorithm").val("hmac_md5")                 // 第二阶段验证算法
+            $("#pfs_group").val("1")                                           // 第二阶段PFS群组
+            $("#ph2_lifetime").val("28800")                                    // 第二阶段密钥生命周期
+            $("input[name='dpd_switch'][value='enable']").prop('checked', true);
+             do_dpd_change()
+            //-------------------------------------------------------------------------------------------------
+        })
+
+        // new 隧道
+        $('#btn_new').click(function () {
+
+            policy_modify_flag = false
+            policy_new_flag = true
+            $(".error").removeClass("error");
+            $('#win_title').html($.i18n.prop("ipsec_config_add_tunnel_config"));
+            $('#txt_rule_name,#range_ip,#txt_ruledesc').val('');
+            $('#old_tunnel_name').val('0');
+            $(".rulestatus[value='enable']").prop('checked', true);
+            $('#modal_accountInfo').modal({backdrop: 'static', keyboard: false});
+            $("#advance").html($.i18n.prop("ipsec_config_advance_show"))
+            $("#tunnel_name").removeAttr("disabled").css({"bgcolor": "white"});
+
+            $('#tunnel_name').val('');                                            // 1 安全策略名称
+            $('#local_subnet_ip').val("");                                        // 4 本地ip地
+            $('#remote_subnet_ip').val("");                                       // 6 对端ip地址
+			$('#local_subnet_mask').val("24");                                    // 4 本地ip地
+            $('#remote_subnet_mask').val("24");                                   // 6 对端ip地址
+            $('#remote').val("");                                                 // 8 对端网关
+
+            $("input[name='enabled'][value='1']").prop('checked', true);          // 启用状态-->默认开启
+            $("input[name='exchange_mode'][value='main']").prop('checked', true); // 协商模式-->默认主模式
+            $("#advance_div").css("display","none");                              // 高级设置-->默认不打开
+            $("#network_mode").val("client")                                      // 本地类型-->默认客户端模式
+            $("#authentication_method").val("pre_shared_key")                     // 默认预共享秘钥方式,简单
+            $("#pre_shared_key").val("111")                                       // 默认预共享秘钥111
+
+
+            //-------------------------------加密部分设置默认值----------------------------------------------------
+            $("#ph1_encryption_algorithm").val("3des")                          // 第一阶段加密算法
+            $("#ph1_hash_algorithm").val("md5")                                 // 第一阶段验证算法
+            $("#dh_group").val("modp768")                                       // 第一阶段DH组
+            $("#ph1_lifetime").val("86400")                                     // 第一阶段密钥生命周期
+            $("#dpd_delay").val("10")                                           // DPD检测周期
+
+            $("#ph2_encryption_algorithm").val("des")                          // 第二阶段加密算法
+            $("#ph2_authentication_algorithm").val("hmac_md5")                 // 第二阶段验证算法
+            $("#pfs_group").val("1")                                           // 第二阶段PFS群组
+            $("#ph2_lifetime").val("28800")                                    // 第二阶段密钥生命周期
+            //-------------------------------------------------------------------------------------------------
+            do_dpd_change()
+            do_net_mode_change()
+            do_net_auth_change()
+            total_tunnel = load_tunnel_total()
+        });
+
+        // 保存隧道按钮
+        $('#save_tunnel').click(function () {
+
+            if (ruleValidator.form()) {
+
+                // 服务不需要配置相关的参数
+                if($('#network_mode').val() == "server")
+                {
+                    $('#local_subnet_ip').val('')
+                    $('#local_subnet_mask').val('')
+                    $('#remote_subnet_ip').val('')
+                    $('#remote_subnet_mask').val('')
+					$('#remote').val("anonymous")
+                }
+
+                var save_data =
+                    {
+                        tunnel_name: $('#tunnel_name').val(),                             // 1 隧道名称
+                        enabled: $("input[name='enabled']:checked").val(),                // 2 启用安全策略
+                        network_mode: $('#network_mode').val(),                           // 3 本地类型
+                        local_subnet_ip: $('#local_subnet_ip').val()||"0.0.0.0",          // 4 本地ip地址
+                        local_subnet_mask: $('#local_subnet_mask').val()||"31",           // 5 本地子网掩码
+                        remote_subnet_ip: $('#remote_subnet_ip').val()||"0.0.0.0",        // 6 对端ip地址
+                        remote_subnet_mask: $('#remote_subnet_mask').val()||"31",         // 7 对端子网掩码
+                        remote: $('#remote').val(),                                       // 8 对端网关
+                        exchange_mode: $("input[name='exchange_mode']:checked").val(),    // 9 协商模式
+                        authentication_method:$('#authentication_method').val(),          // 10 授权模式
+                        pre_shared_key: $('#pre_shared_key').val(),                       // 11 预共享密钥
+
+                        old_tunnel_name: $('#old_tunnel_name').val(),
+              
+
+                        ///////////////////////////////以下加密部分数据////////////////////////////////////////
+                        ph1_encryption_algorithm:$("#ph1_encryption_algorithm").val(),            // 第一阶段加密算法
+                        ph1_hash_algorithm:$("#ph1_hash_algorithm").val(),                        // 第一阶段验证算法
+                        dh_group:$("#dh_group").val(),                                            // 第一阶段DH组
+                        ph1_lifetime:$("#ph1_lifetime").val(),                                    // 第一阶段密钥生命周期
+                        dpd_switch: $("input[name='dpd_switch']:checked").val(),                  // DPD检测开启
+                        dpd_delay:$("#dpd_delay").val(),                                          // DPD检测周期
+
+                        ph2_encryption_algorithm:$("#ph2_encryption_algorithm").val(),            // 第二阶段加密算法
+                        ph2_authentication_algorithm:$("#ph2_authentication_algorithm").val(),    // 第二阶段验证算法
+                        pfs_group:$("#pfs_group").val(),                                          // 第二阶段PFS群组
+                        ph2_lifetime:$("#ph2_lifetime").val() ,                                   // 第二阶段密钥生命周期
+
+
+                    }
+                if (total_tunnel >= 4 ) {
+                    $ips.warning($.i18n.prop("ipsec_config_total_tunnel_warning"))
+                    return false;
+                }
+                $ips.loadData($ips.getBasePath() + '/admin/vpn/save_tunnel', save_data, function (data) {
+                    if (data.code == 0) {
+                        $('#modal_accountInfo').modal('hide');
+                        $("#dataList").dataTable().fnDraw(false);
+                        refresh();
+                    } else {
+                        $ips.error(data.message);
+                    }
+                });
+            }
+            return false;
+        });
+
+        // 修改隧道
+        $(document).on('click', '#get_tunnel_info', function () {
+            policy_modify_flag = true
+            policy_new_flag = false
+            $("#frmRuleData").validate().resetForm();
+            $(".error").removeClass("error");
+            $('#win_title').html($.i18n.prop("ipsec_config_edit_ipsec_policy"));
+            $('#modal_accountInfo').modal({backdrop: 'static', keyboard: false});
+            $("#advance_div").css("display","none");
+            $("#tunnel_name").attr("disabled", "disabled").css({"bgcolor": "#ddd"})
+            $ips.loadData($ips.getBasePath() + '/admin/vpn/get_tunnel_info', {tunnel_name: $(this).attr('data-id')}, function (data) {
+                if (data.code == 0) {
+
+                    $('#old_tunnel_name').val(data.rows['.name']);                      // 0 隐藏
+                    $('#tunnel_name').val(data.rows['.name']);                          // 1 隧道名称
+                    $("input[name='enabled'][value='" + data.rows.enabled + "']").prop('checked', true);                                                                 // 2 启用安全策略
+                    $('#network_mode').val(data.rows.network_mode);                      // 3 组网模式
+                    $('#local_subnet_ip').val(data.rows.local_subnet_ip);                // 4 本地ip地址
+                    $('#local_subnet_mask').val(data.rows.local_subnet_mask);            // 5 本地子网掩码
+                    $('#remote_subnet_ip').val(data.rows.remote_subnet_ip);              // 6 对端ip地址
+                    $('#remote_subnet_mask').val(data.rows.remote_subnet_mask);          // 7 对端子网掩码
+                    $('#remote').val(data.rows.remote);                                  // 8 对端网关
+
+                    $("#authentication_method").val(data.rows.authentication_method);                    
+                    $("#pre_shared_key").val(data.rows.pre_shared_key);                   
+
+                    //-----------------------------加密部分---------------------------------------------------------
+                    $("#ph1_encryption_algorithm").val(data.rows.ph1_encryption_algorithm) ;  
+                    $("#ph1_hash_algorithm").val(data.rows.ph1_hash_algorithm);
+                    $("#dh_group").val(data.rows.dh_group);
+                    $("#ph1_lifetime").val(data.rows.ph1_lifetime);
+                    $("#dpd_delay").val(data.rows.dpd_delay); 
+                    $("#ph2_encryption_algorithm").val(data.rows.ph2_encryption_algorithm); 
+                    $("#ph2_authentication_algorithm").val(data.rows.ph2_authentication_algorithm);
+                    $("#pfs_group").val(data.rows.pfs_group);
+                    $("#ph2_lifetime").val(data.rows.ph2_lifetime) ;
+                    $("input[name='exchange_mode'][value='" + data.rows.exchange_mode + "']").prop('checked', true);
+                    $("input[name='dpd_switch'][value='" + data.rows.dpd_switch + "']").prop('checked', true);
+                    //-------------------------------------------------------------------------------------------------
+                    
+				    do_net_mode_change()
+                    do_net_auth_change()
+                    do_dpd_change()
+                } else {
+                    $ips.error(data.message);
+                }
+            });
+        });
+
+        // 删除隧道
+        $(document).on('click', '#delete_tunnel', function () {
+            var dataId = $(this).attr('data-id');
+            $ips.confirm($.i18n.prop("ipsec_config_delete_confirm"), null, function () {
+                $ips.loadData($ips.getBasePath() + '/admin/vpn/delete_tunnel', {tunnel_name: dataId}, function (data) {
+                    if (data.code == 0) {
+                        $("#dataList").dataTable().fnDraw(false);
+                    } else {
+                        $ips.error(data.message);
+                    }
+                });
+            });
+        });
+
+    })
+
+    //网络模式修改
+    function do_net_mode_change() {
+        if ($('#network_mode').val() == 'client') {
+            $('#client_div').show()
+            //$('#local_subnet_mask').val("24");                                  
+            //$('#remote_subnet_mask').val("24");     
+            $("input[name='exchange_mode'][value='main']").prop('checked', true); 
+        } else {
+            $('#client_div').hide()
+        }
+    }
+    // 切换认证模式
+    function do_net_auth_change() {
+        if ($('#authentication_method').val() == 'pre_shared_key')
+        {
+            $('#txt_ike_psk_div').show()
+        } else
+        {
+            $('#txt_ike_psk_div').hide()
+            $("#pre_shared_key").val("")
+        }
+    }
+    //DPD检测开启
+    function do_dpd_change() {
+        if ($("input[name='dpd_switch']:checked").val() == "enable") {
+            $("#dpd_delay").removeAttr("disabled").css({"bgcolor": "white"});
+        } else {
+            $("#dpd_delay").attr("disabled", "disabled").css({"bgcolor": "#ddd"})
+        }
+    }
+
+    // 安全协议修改
+    function do_safe_change() {
+        if ($('#safe_protocol').val() == 'esp') {
+            $('#esp_1').show()
+            $('#ah_1').hide()
+            $('#authentication_algorithm').val("hmac_md5");
+            $('#encryption_algorithm').val("des");
+
+        } else {
+            $('#esp_1').hide()
+            $('#ah_1').show()
+            $('#ah_cipher').val("hmac_md5");
+        }
+    }
+
+    // 切换标签页的时候刷新，否则数据重叠
+    function refresh() {
+
+        window.location.href = '<%=controller%>/admin/vpn/ipsec_manage';
+    }
+
+    function load_tunnel_total()
+    {
+        $ips.loadData($ips.getBasePath() + '/admin/vpn/get_tunnel_list', {}, function (data) {
+            total_tunnel = data.total
+        });
+        return total_tunnel
+    }
+
+</script>
+</body>
+</html>
