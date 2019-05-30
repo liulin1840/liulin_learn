@@ -1,0 +1,49 @@
+请求头 : /admin/ac/getapconfoption.do 不涉及数据库查询
+acMait.lua
+   -->luciHttpProcess.process(parameters, Cm.getApConfOption);
+
+      -- > M.process(paras, callback) //有个回调函数
+
+          -- >local Cm = require "luci.service.ac.controller.MaintController" 
+
+            --> local confOption = acMaintService.getApConfigOption();
+
+             -- >local file = io.open((packPath() .. "/ap-conf-option.json"), "r");
+
+请求头 : /admin/device/getDeviceManageList
+参数: Server: nginx/1.4.7
+
+请求头 :  /admin/ac/gettempletofgrouptochild.do
+
+
+AcConfigDao 查找结果
+
+D:\ZK_GIT\wac\wac\luci\service\ac\serv\AcTempletService.lua:
+
+D:\ZK_GIT\wac\wac\luci\service\ac\serv\AcMaintService.lua:
+
+D:\ZK_GIT\wac\wac\luci\service\ac\serv\AcAuthService.lua:
+
+
+--页面上调用就不得行
+acMaint.lua --> MaintController --> AcMaintService --> AcConfigDao -- >db -->mysql.lua
+
+acLog.lua 
+--> D:\ZK_GIT\wac\wac\luci\service\ac\dao\AcOnlineDao.lua
+
+
+log分析
+
+1  acLog.lua  
+  -- > luci.service.ac.controller.LogController
+     -->  luci.service.ac.serv.AcLogService
+
+     -->   调用了 acLogService.getLogByDevId   
+                  acLogService.getLogCountByGroupId  
+                  acLogService.getOnlineLogByDevSn  
+                  acLogService.getOnlineLogCountByDevSn
+
+     --> AcLogService.lua
+         --> luci.service.ac.util.HashMap
+
+

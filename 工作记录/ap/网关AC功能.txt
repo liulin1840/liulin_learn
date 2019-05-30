@@ -1,0 +1,354 @@
+1 固件查询
+	Request URL: http://10.60.162.1/cgi-bin/webconsole/admin/ac/queryfirmware.do
+	请求数据:
+			allProductType: true
+			latestVersion: false
+			query: 
+			page: 1
+			rows: 10
+			type: json
+
+	lua处理:
+			路径: D:\ZK_GIT\wac\wac\luci\controller\admin\acFm.lua
+
+			local parameters = {"allProductType", "productType", "latestVersion", "page", "rows", "query"}
+			luciHttpProcess.process(parameters, FirmwareController.queryFirmware)
+
+			local request = Request:new(); // D:\ZK_GIT\wac\wac\luci\service\ac\util\request.lua
+			new 方法 : 设置获取相应的方法 同时回调 FirmwareController.queryFirmware 函数
+
+			控制层: D:\ZK_GIT\wac\wac\luci\service\ac\controller\FirmwareController.lua
+
+				 1 获取页面传递过来的参数 
+				 2 去查询结果
+				   local qresult = acFirmwareService.QueryFirmware(allProductType, productType, query, pageIndex, pageSize, latestVersion);
+
+			服务层: D:\ZK_GIT\wac\wac\luci\service\ac\serv\AcFirmwareService.lua
+
+			      1 组装http请求向服务端发送查询请求 测试平台请求数据
+			      2 curl http://115.29.236.125:8090/wacs-mana/getfirmwarebyname.ac
+			        curl -d "pageIndex=1&pageSize=2" http://115.29.236.125:8090/wacs-mana/queryfirmware.ac
+
+			      3 请求后接受返回数据,返回到页面显示
+
+2 固件升级 
+  		 页面按钮: D:\ZK_GIT\wac\wac\luci\view\device\device_manage.htm   id="btn_update"
+
+  		 显示固件列表请求
+  		 Request URL: http://10.60.162.1/cgi-bin/webconsole/admin/ac/getacsystem.do
+  		 参数: devId: 20
+
+  		 js处理函数
+  		 function showUpdateFirmware(devId, deviceName, productType, currentVersion)  路径: D:\ZK_GIT\wac\wac\luci\view\ac\device.htm
+
+  		 获取到的固件信息
+  		 {
+			"id": 208,
+			"discription": "CHUM-TEST-",
+			"fmName": "PA-3120-4.3.0.4781-R8",
+			"fmSize": 9831004,
+			"addDate": 1554772257000,
+			"storePath": "/opt/wacs-mana/tomcat/webapps/wacs-mana/firmware/PA-3120-4.3.0.4781-R8.zpk",
+			"downloadPath": "firmware/PA-3120-4.3.0.4781-R8.zpk",
+			"fmVersion": "4.3.0.4781",
+			"productType": "PA-3120",
+			"downloads": null,
+			"releaseTime": 1554704980000,
+			"protocolVersion": 1
+		}
+
+		升级请求选择: /admin/ac/getupdateofdevice.do  路径: D:\ZK_GIT\wac\wac\luci\controller\admin\acMaint.lua
+		lua --> luciHttpProcess.process(parameters, Cm.getUpdateOfDevice);
+
+		    --> local acUpdate = acMaintService.getUpdateByDeviceId(devId);
+
+		    --> AcUpdateDao.selectByPrimaryKey(devId);
+
+		    -- > db.selectOne("ac_update", "*", _where) 查询ac_update
+
+			mysql> select * from ac_update;
+			+------------------------------+-------+----------------------------------+--------------+---------------------+-----------+
+			| devId | devSn        | fmName                            | fmVersion  | downloadPath                                                                        | state | handler                          | stateDesc    | time                | initiator |
+			+-------+--------------+-----------------------------------+------------+-------------------------------------------------------------------------------------+-------+----------------------------------+--------------+---------------------+-----------+
+			|     1 | 000000112233 | ZK-TCA82-B-4.3.0.4478-1806-stable | 4.3.0.4478 | http://115.29.236.125:8090/wacs-mana/firmware/ZK-TCA82-B-4.3.0.4478-1806-stable.zpk |     2 | 从4.3.0.2158升级到4.3.0.4478 | 升级成功 | 2019-05-15 11:17:25 | admin     |
+			|    20 | 001234567851 | ZK-TCA82-B-4.3.0.4478-1806-stable | 4.3.0.4478 | http://115.29.236.125:8090/wacs-mana/firmware/ZK-TCA82-B-4.3.0.4478-1806-stable.zpk |     2 | 从4.3.0.2158升级到4.3.0.4478 | 升级成功 | 2019-05-15 11:17:49 | admin     |
+			+-------+--------------+-----------------------------------+------------+-------------------------------------------------------
+
+		固件升级: id= saveUpdateButton
+		js 处理函数 saveUpdateFirmware();
+
+		升级请求: /admin/ac/updatedevice.do
+		参数: devId : devId,    //这里可以12,20,40, 批量进行升级操作
+ 			  fmName : acFm.fmName,
+ 			  downloadPath : acFm.downloadPath,
+ 			  fmVersion : acFm.fmVersion
+
+ 		lua --> luciHttpProcess.process(parameters, Cm.updateDevice);
+ 		    --> 设置升级参数	
+ 		    			acUpdate:setDevId(devId);
+						acUpdate:setFmName(fmName);
+						acUpdate:setDownloadPath(downloadPath);
+						acUpdate:setFmVersion(fmVersion);
+						acUpdate:setState(AcUpdate.UPDATE_STATE_WAIT);
+						acUpdate:setStateDesc(AcUpdate.UPDATE_STATE_DESC[acUpdate:getState()]);
+						acUpdate:setHandler(string.format("从%s升级到%s", old_ver, fmVersion));
+						acUpdate:setInitiator(userName);
+						acUpdate:setTime(os.time());
+
+						if (acMaintService.setUpdate(acUpdate)) then
+							acMaint:setDevId(devId);
+							acMaint:setUpdateFlag(1);
+							acMaintService.setMaintFlagByDeviceId(acMaint);
+
+		ZK={"reboot":0,"status_error":"OK","firmware_path":"","update_config":0,"update_firmware":0}#$
+
+		function M.setMaintFlagByDeviceId(acMaint)  //路径D:\ZK_GIT\wac\wac\luci\service\ac\serv\AcMaintService.lua
+		没找到就写,找到了就更新
+		mysql> select * from ac_maint;
+		+-------+--------------+------------+------------+------------+-----------------+
+		| devId | devSn        | configFlag | updateFlag | rebootFlag | updateUbootFlag |
+		+-------+--------------+------------+------------+------------+-----------------+
+		|     1 | 000000112233 |          0 |          0 |          0 |               0 |
+		|    20 | 001234567851 |          0 |          0 |          0 |               0 |
+		|    21 | 24050fb1dcc7 |          0 |          0 |          0 |               0 |
+		+-------+--------------+------------+------------+------------+-----------------
+
+3  上线记录: 
+		  请求: /admin/ac/getonlinelog.do
+		  lua : luciHttpProcess.process(parameters, LogController.getOnlineLog)
+		        --> acLogService.getOnlineLogByDevSn(devSn, startDate, endDate, pageIndex, pageSize);
+		        --> local acOnlines = acOnlineDao.selectByDevSn(map);
+		        --> local row = DBHelper.selectPage("ac_online", "*", _where, paraMap:get("pageIndex"), paraMap:get("pageSize"), nil, "AND", "onLineTime desc");
+
+4   设备维护列表json
+{
+	"message": "",
+	"total": 3,
+	"success": true,
+	"rows": {
+
+		"deviceSn": "000000112233",
+		"ip": "10.60.162.100",
+		"createdTime": 1557901302,
+		"note_time": "2019-04-24 17:10:39",
+		"onOffLine": "在线",
+		"acname": "000000112233",
+		"status": "{ auth_path : / , device_type : TCA82 , sys_memfree :10539008, auth_port :8080, portal_proxy :0, acdisc_enable :1, escape_mode_enable :0, ssids :[{ auth_mode :0, auth_enable :1, station_count :0, bssid : 00:11:22:33:44:56 , vlanId :0, max_users :-1, station_list :{}, vlanEnable :0, coding_type :0, ssid : WIFI , upload_speed :-1, download_speed :-1, password :  , encryption_type :0, hide_ssid :0}], work_mode :0, ipaddr_release :5, status_interval :1, soft_ver : 4.3.0.4478 , timer_reboot :0, ac_bak_sync_interval :30, gw_id : 000000112233 , station_agingtime :10, kick_threshold :-85, band_select_enable :1, ac_bak_port :8090, vendor_id : ZK , ac_port :8090, uboot_ver : 0.0.0.0 , mac_white_black :{ mac_black_list_md5 : 0 , mac_white_list_md5 : 0 }, sta_scan :{ enable :0, group_id :5, server_port :8100, building_id : ZK-PROBE-001002 , server_ip : 120.76.116.73 , interval :5}, lan_mac : 00:11:22:33:44:55 , ac_bak_path : /wacs-mana/ , qos :{ enable :0, upload_bw :128, sta_download :0, download_bw :51200}, ssids_5g :[{ auth_mode :0, auth_enable :1, station_count :0, bssid : 00:11:22:33:44:56 , vlanId :0, max_users :-1, station_list :{}, vlanEnable :0, coding_type :0, ssid : WIFI , upload_speed :-1, download_speed :-1, password :  , encryption_type :0, hide_ssid :0}], auth_server : auth.zkgcloud.com , radio5g :{ channel :0, freq_bandwidth :2, wireless_mode :0, tx_power :100, turn_on :1}, sys_memory :62758912, radio24g :{ channel :0, freq_bandwidth :1, wireless_mode :3, tx_power :100, turn_on :1}, ac_path : /wacs-mana/ , ac_server : auth.zkgcloud.com , sys_time :11209, total_users :0, wan_type :1, auth_enable :0, wan_mac : 00:11:22:33:44:55 , ac_bak_hostname : auth.zkgcloud.com , wan_ip : 10.60.162.100 , sys_load :0, lan_ip : 192.168.2.1 , auth_protocol : disabled , product_type : TCA82-B , fm_name : ZK-TCA82-B-4.3.0.4478-1806-stable , apple_auto_portal :0}",
+		"device_sn": "000000112233",
+		"mac": "00:11:22:33:44:55",
+		"dev_type": "TCA82-B",
+		"groupId": 1,
+		"devSn": "000000112233",
+		"deviceId": "1",
+		"group_id": "0",
+		"device_id": "1",
+		"softVersion": "4.3.0.4478",
+		"productType": "TCA82-B",
+		"active_time": "2019-05-15 14:21:42"
+	}
+}  	     
+
+5 luajit 安装
+	zk_openwrt/openwrt/package/feeds/packages 在这个目录下创建快捷方式,
+	zk_openwrt/openwrt/feeds/packages/lang    这目录下放Makefile
+	luajit -> ../../../feeds/packages/lang/luajit  创建的快捷方式
+
+6 openresty 安装
+  	feeds/packages/net/nginx/Makefile  nginx 的makefile 需要修改
+
+  	# Nginx 依赖luajit
+  	define Package/nginx-all-module
+	  $(Package/nginx/default)
+	  TITLE += with ALL module selected
+	  DEPENDS:=+libpcre +libopenssl +zlib +liblua +libpthread +libexpat +luajit
+
+	# 配置Nginx luajit 变量
+	ifeq ($(CONFIG_NGINX_LUA),y)
+	  CONFIGURE_VARS += LUAJIT_INC=$(STAGING_DIR)/usr/include \
+	                    LUAJIT_LIB=$(STAGING_DIR)/usr/lib
+	endif
+
+7 认证
+http://10.60.162.1:8080/default/page_2.html?login=false&gw_address=10.60.162.1&gw_port=2060&gw_id=24050FE01022&mac=00:26:2d:9d:17:47&ip=10.60.162.112&ssid=GWAUTHSSID&url=hidden&apple_cna_pass=1&login=false&gw_address=10.60.162.1&gw_port=2060&gw_id=24050FE01022&mac=00:26:2d:9d:17:47&ip=10.60.162.112&ssid=GWAUTHSSID&url=hidden&apple_cna_pass=1
+
+  认证参数保存 
+  请求: /admin/auth/saveconfig
+
+9/05/16 15:18:18 [error] 32039#0: *1758 lua entry thread aborted: runtime error: /usr/lib/lua/luci/lib/db.lua:82: bad argument #3 to 'forma                                t' (number expected, got nil)
+stack traceback:
+coroutine 0:
+        [C]: in function 'format'
+        /usr/lib/lua/luci/lib/db.lua:82: in function 'execute_sql'
+        /usr/lib/lua/luci/lib/db.lua:252: in function 'deleteOldByDevSnAndDate'
+        /usr/lib/lua/luci/service/ac/serv_ngx/AcStatusService.lua:218: in function 'deleteOldRecord'
+        .../lib/lua/luci/service/ac/controller_ngx/ApController.lua:462: in function 'deleteOldRecord'
+        .../lib/lua/luci/service/ac/controller_ngx/ApController.lua:390: in function 'ApStatus'
+        ...ib/lua/luci/service/ac/controller_ngx/ngxHttpProcess.lua:62: in function 'main'
+
+8 getstatusofmultidevice.do
+  显示在线离线设备
+
+ 	local response = Cm.getStatusOfMultiDevice(request)
+
+ 	信息和条数查询
+	local data = acMaintService.queryDeviceStatusOfGroup(groupPath, query, devState, pageIndex, pageSize, true);
+	local count = acMaintService.queryDeviceStatusCountOfGroup(groupPath, query, devState);
+
+	页面传入的查询条件
+	local query = request:getParameter("query");
+
+	返回页面
+
+	GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456' WITH GRANT OPTION;
+	FLUSH PRIVILEGES;
+9 ac_status磁盘空间爆掉了
+  思路: 查询, 找到了就更新, 没找到就插入 数据
+
+mysql> desc ac_status;
++-------------+---------------+------+-----+---------+----------------+
+| Field       | Type          | Null | Key | Default | Extra          |
++-------------+---------------+------+-----+---------+----------------+
+| rid         | int(10)       | NO   | PRI | NULL    | auto_increment |
+| devSn       | varchar(128)  | NO   |     | NULL    |                |
+| productType | varchar(64)   | YES  |     | NULL    |                |
+| softVersion | varchar(64)   | YES  |     | NULL    |                |
+| status      | varchar(4096) | YES  |     | NULL    |                |
+| createdTime | datetime      | YES  |     | NULL    |                |
++-------------+---------------+------+-----+---------+----------------+
+6 rows in set (0.46 sec)
+
+| 7330 | 000000112233 | TCA82-B     | 4.3.0.4478  | 
+{"auth_path":"/","device_type":"TCA82","sys_memfree":13201408,"auth_port":8080,"portal_proxy":0,"acdisc_enable":1,"escape_mode_enable":0,"ssids":[{"auth_mode":1,"auth_enable":1,"station_count":1,"bssid":"00:11:22:33:44:56","vlanId":0,"max_users":-1,"station_list":[{"mac":"04:b1:67:9e:dd:5e","ip":"192.168.1.104"}],"vlanEnable":0,"coding_type":0,"ssid":"wangwang","upload_speed":-1,"download_speed":-1,"password":"88888888","encryption_type":1,"hide_ssid":0}],"work_mode":0,"ipaddr_release":5,"status_interval":1,"soft_ver":"4.3.0.4478","timer_reboot":0,"ac_bak_sync_interval":30,"gw_id":"000000112233","station_agingtime":10,"kick_threshold":-85,"band_select_enable":1,"ac_bak_port":8090,"vendor_id":"ZK","ac_port":8090,"uboot_ver":"0.0.0.0","mac_white_black":{"mac_black_list_md5":"0","mac_white_list_md5":"0"},"sta_scan":{"enable":0,"group_id":5,"server_port":8100,"building_id":"ZK-PROBE-001002","server_ip":"120.76.116.73","interval":5},"lan_mac":"00:11:22:33:44:55","ac_bak_path":"/wacs-mana/","qos":{"enable":0,"upload_bw":128,"sta_download":0,"download_bw":51200},"ssids_5g":[{"auth_mode":0,"auth_enable":1,"station_count":0,"bssid":"00:11:22:33:44:56","vlanId":0,"max_users":-1,"station_list":{},"vlanEnable":0,"coding_type":0,"ssid":"WIFI","upload_speed":-1,"download_speed":-1,"password":"","encryption_type":0,"hide_ssid":0}],"auth_server":"192.168.1.1","radio5g":{"channel":0,"freq_bandwidth":2,"wireless_mode":0,"tx_power":100,"turn_on":1},"sys_memory":62758912,"radio24g":{"channel":0,"freq_bandwidth":1,"wireless_mode":3,"tx_power":100,"turn_on":1},"ac_path":"/wacs-mana/","ac_server":"auth.zkgcloud.com","sys_time":346426,"total_users":1,"wan_type":1,"auth_enable":0,"wan_mac":"00:11:22:33:44:55","ac_bak_hostname":"auth.zkgcloud.com","wan_ip":"192.168.1.100","sys_load":0,"lan_ip":"192.168.2.1","auth_protocol":"local-portal","product_type":"TCA82-B","fm_name":"ZK-TCA82-B-4.3.0.4478-1806-stable","apple_auto_portal":0} 
+| 2019-05-20 10:54:25 |
+
+
+
+10 页面请求卡顿: 
+	/admin/ac/getapconfoption.do
+	-- > acMaint.lua 
+	-- > luciHttpProcess.process(parameters, Cm.getApConfOption);
+	-- > local confOption = acMaintService.getApConfigOption();
+	-- > 
+
+	/admin/ac/getvendorlist.do
+
+11 ac_log 删除策略
+
+{
+	"auth_path": "/wacs/",
+	"device_type": "TCA82",
+	"sys_memfree": 10665984,
+	"auth_port": 8080,
+	"portal_proxy": 0,
+	"acdisc_enable": 1,
+	"escape_mode_enable": 0,
+	"ssids": [{
+		"auth_mode": 1,
+		"auth_enable": 1,
+		"station_count": 0,
+		"bssid": "00:12:34:56:78:52",
+		"vlanId": 0,
+		"max_users": -1,
+		"station_list": {},
+		"vlanEnable": 0,
+		"coding_type": 0,
+		"ssid": "WIFI",
+		"upload_speed": -1,
+		"download_speed": -1,
+		"password": "1234567800",
+		"encryption_type": 1,
+		"hide_ssid": 0
+	}],
+	"work_mode": 0,
+	"ipaddr_release": 5,
+	"status_interval": 1,
+	"soft_ver": "4.3.0.4478",
+	"timer_reboot": 0,
+	"ac_bak_sync_interval": 30,
+	"gw_id": "001234567851",
+	"station_agingtime": 10,
+	"kick_threshold": -85,
+	"band_select_enable": 1,
+	"ac_bak_port": 8090,
+	"vendor_id": "ZK",
+	"ac_port": 8090,
+	"uboot_ver": "0.0.0.0",
+	"mac_white_black": {
+		"mac_black_list_md5": "0",
+		"mac_white_list_md5": "0"
+	},
+	"sta_scan": {
+		"enable": 0,
+		"group_id": 5,
+		"server_port": 8100,
+		"building_id": "ZK-PROBE-001002",
+		"server_ip": "120.76.116.73",
+		"interval": 5
+	},
+	"lan_mac": "00:12:34:56:78:51",
+	"ac_bak_path": "/wacs-mana/",
+	"qos": {
+		"enable": 0,
+		"upload_bw": 128,
+		"sta_download": 0,
+		"download_bw": 51200
+	},
+	"ssids_5g": [{
+		"auth_mode": 0,
+		"auth_enable": 1,
+		"station_count": 0,
+		"bssid": "00:12:34:56:78:52",
+		"vlanId": 0,
+		"max_users": -1,
+		"station_list": {},
+		"vlanEnable": 0,
+		"coding_type": 0,
+		"ssid": "WIFI",
+		"upload_speed": -1,
+		"download_speed": -1,
+		"password": "",
+		"encryption_type": 0,
+		"hide_ssid": 0
+	}],
+	"auth_server": "auth.zkgcloud.com",
+	"radio5g": {
+		"channel": 0,
+		"freq_bandwidth": 2,
+		"wireless_mode": 0,
+		"tx_power": 100,
+		"turn_on": 1
+	},
+	"sys_memory": 62758912,
+	"radio24g": {
+		"channel": 0,
+		"freq_bandwidth": 1,
+		"wireless_mode": 3,
+		"tx_power": 100,
+		"turn_on": 1
+	},
+	"ac_path": "/wacs-mana/",
+	"ac_server": "120.76.116.73",
+	"sys_time": 367,
+	"total_users": 0,
+	"wan_type": 1,
+	"auth_enable": 0,
+	"wan_mac": "00:12:34:56:78:51",
+	"ac_bak_hostname": "auth.zkgcloud.com",
+	"wan_ip": "192.168.1.101",
+	"sys_load": 0,
+	"lan_ip": "192.168.2.1",
+	"auth_protocol": "disabled",
+	"product_type": "TCA82-B",
+	"fm_name": "ZK-TCA82-B-4.3.0.4478-1806-stable",
+	"apple_auto_portal": 0
+}
+
+联网终端: 点击状态 
+ 		 --> /admin/ac/getstatusofdevice.do
+ 		 --> luciHttpProcess.process(parameters, Cm.getStatusOfDevice);
+ 		 --> local acStatus = acStatusService.getLatestStatus(request:getParameter("devSn"));
+ 		 --> acStatus = acStatusDao.selectLatestBySn(devSn);
+ 		 --> local row = DBHelper.selectOne("ac_status", "*", _where, nil, "and", "createdTime desc")
+
+保存设备: 
+ 点击添加设备: btn_save --> /admin/device/saveDeviceInfo

@@ -1,0 +1,21 @@
+-target=mipsel-openwrt-linux --host=mipsel-openwrt-linux --build=x86_64-linux-gnu --program-prefix= --program-suffix= --prefix=/usr --exec-prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --libexecdir=/usr/lib --sysconfdir=/etc --datadir=/usr/share --localstatedir=/var --mandir=/usr/man --infodir=/usr/info --disable-nls --disable-ipv6 --crossbuild=Linux::mipsel --prefix=/usr --conf-path=/etc/nginx/nginx.conf --with-http_ssl_module --add-module=/home/zhutao/codes/zk_openwrt/openwrt/build_dir/target-mipsel_1004kc+dsp_uClibc-0.9.33.2/nginx-all-module/nginx-1.15.8/nginx-naxsi/naxsi_src --add-module=/home/zhutao/codes/zk_openwrt/openwrt/build_dir/target-mipsel_1004kc+dsp_uClibc-0.9.33.2/nginx-all-module/nginx-1.15.8/lua-nginx --with-ipv6 --with-http_stub_status_module --with-http_flv_module --with-http_dav_module --add-module=/home/zhutao/codes/zk_openwrt/openwrt/build_dir/target-mipsel_1004kc+dsp_uClibc-0.9.33.2/nginx-all-module/nginx-1.15.8/nginx-dav-ext-module --with-http_auth_request_module --with-http_v2_module --with-http_realip_module --with-http_secure_link_module --with-http_sub_module --add-module=/home/zhutao/codes/zk_openwrt/openwrt/build_dir/target-mipsel_1004kc+dsp_uClibc-0.9.33.2/nginx-all-module/nginx-1.15.8/nginx-headers-more --with-stream --with-stream_ssl_module --with-stream_ssl_preread_module --add-module=/home/zhutao/codes/zk_openwrt/openwrt/build_dir/target-mipsel_1004kc+dsp_uClibc-0.9.33.2/nginx-all-module/nginx-1.15.8/nginx-brotli --add-module=/home/zhutao/codes/zk_openwrt/openwrt/build_dir/target-mipsel_1004kc+dsp_uClibc-0.9.33.2/nginx-all-module/nginx-1.15.8/nginx-rtmp --add-module=/home/zhutao/codes/zk_openwrt/openwrt/build_dir/target-mipsel_1004kc+dsp_uClibc-0.9.33.2/nginx-all-module/nginx-1.15.8/nginx-ts --error-log-path=/var/log/nginx/error.log --pid-path=/var/run/nginx.pid --lock-path=/var/lock/nginx.lock --http-log-path=/var/log/nginx/access.log --http-client-body-temp-path=/var/lib/nginx/body --http-proxy-temp-path=/var/lib/nginx/proxy --http-fastcgi-temp-path=/var/lib/nginx/fastcgi --with-cc=mipsel-openwrt-linux-uclibc-gcc --with-cc-opt='-I/home/zhutao/codes/zk_openwrt/openwrt/staging_dir/target-mipsel_1004kc+dsp_uClibc-0.9.33.2/usr/include -I/home/zhutao/codes/zk_openwrt/openwrt/staging_dir/target-mipsel_1004kc+dsp_uClibc-0.9.33.2/include -I/home/zhutao/codes/zk_openwrt/openwrt/staging_dir/toolchain-mipsel_1004kc+dsp_gcc-4.8-linaro_uClibc-0.9.33.2/usr/include -I/home/zhutao/codes/zk_openwrt/openwrt/staging_dir/toolchain-mipsel_1004kc+dsp_gcc-4.8-linaro_uClibc-0.9.33.2/include -Os -pipe -mmt -mips32r2 -mtune=1004kc -fno-caller-saves -fhonour-copts -Wno-error=unused-but-set-variable -Wno-error=unused-result -msoft-float -fvisibility=hidden -ffunction-sections -fdata-sections -DNGX_LUA_NO_BY_LUA_BLOCK' --with-ld-opt='-L/home/zhutao/codes/zk_openwrt/openwrt/staging_dir/target-mipsel_1004kc+dsp_uClibc-0.9.33.2/usr/lib -L/home/zhutao/codes/zk_openwrt/openwrt/staging_dir/target-mipsel_1004kc+dsp_uClibc-0.9.33.2/lib -L/home/zhutao/codes/zk_openwrt/openwrt/staging_dir/toolchain-mipsel_1004kc+dsp_gcc-4.8-linaro_uClibc-0.9.33.2/usr/lib -L/home/zhutao/codes/zk_openwrt/openwrt/staging_dir/toolchain-mipsel_1004kc+dsp_gcc-4.8-linaro_uClibc-0.9.33.2/lib -Wl,--gc-sections' --without-http_upstream_zone_module
+
+
+libluajit-5.1.so.2
+
+~/codes/zk_openwrt/openwrt/staging_dir/target-mipsel_1004kc+dsp_uClibc-0.9.33.2$
+
+root@WAC60801:~# ldd nginx -i lua
+        libdl.so.0 => /lib/libdl.so.0 (0x77d4a000)
+        libpthread.so.0 => /lib/libpthread.so.0 (0x77d24000)
+        libcrypt.so.0 => /lib/libcrypt.so.0 (0x77d00000)
+        libluajit-5.1.so.2 => /usr/lib/libluajit-5.1.so.2 (0x77c78000)
+        libm.so.0 => /lib/libm.so.0 (0x77c52000)
+        libexpat.so.1 => /usr/lib/libexpat.so.1 (0x77c1f000)
+        libpcre.so.1 => /usr/lib/libpcre.so.1 (0x77bd4000)
+        libssl.so.1.0.0 => /usr/lib/libssl.so.1.0.0 (0x77b76000)
+        libcrypto.so.1.0.0 => /usr/lib/libcrypto.so.1.0.0 (0x77a10000)
+        libz.so.1 => /usr/lib/libz.so.1 (0x779ed000)
+        libgcc_s.so.1 => /lib/libgcc_s.so.1 (0x779c9000)
+        libc.so.0 => /lib/libc.so.0 (0x7795c000)
+        ld-uClibc.so.0 => /lib/ld-uClibc.so.0 (0x77d5e000)

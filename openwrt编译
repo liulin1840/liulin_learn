@@ -24,3 +24,16 @@ cp package/kernel/appaudit/src/xt_appid/xt_appid.h  staging_dir/target-mipsel_24
 解压到当前目录tar zxvf lua-cjson-2.1.0.tar.gz
 然后cd lua-cjson-2.1.0
 直接make(如何make不过，确认是否安装了lua-devel，安装方法直接sudo yum install lua-devel)
+
+https://github.com/openresty/lua-resty-mysql.git
+
+zk_openwrt/openwrt/build_dir/target-mipsel_1004kc+dsp_uClibc-0.9.33.2$
+
+~/codes/zk_openwrt/openwrt/build_dir/target-mipsel_1004kc+dsp_uClibc-0.9.33.2/nginx-all-module/ngi nx-1.15.8$ ./configure --help
+
+安装好后LUAJIT_LIB和LUAJIT_INC的路径是：
+库文件 LUAJIT_LIB=/usr/local/luajit/lib
+头文件 LUAJIT_INC=/usr/local/luajit/include/luajit-2.1
+这两个路径编译tengine时要用到。
+
+2.2编译tengine：
