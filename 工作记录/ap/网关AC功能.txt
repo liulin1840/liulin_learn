@@ -352,3 +352,44 @@ mysql> desc ac_status;
 
 保存设备: 
  点击添加设备: btn_save --> /admin/device/saveDeviceInfo
+ 
+ ac 联网终端状态查询
+    /admin/ac/getstatusofdevice.do
+	entry({"admin", "ac", "getstatusofdevice.do"}, call("getStatusOfDevice"), _, 11)
+	luciHttpProcess.process(parameters, Cm.getStatusOfDevice);
+	local acStatus = acStatusService.getLatestStatus(request:getParameter("devSn"));
+	local row = DBHelper.selectOne("ac_status", "*", _where, nil, "and", "createdTime desc")
+	
+	id ip mac 在线/离线 定时清理离线数据 
+	
+	AP 上报数据的时候  解析已连接的终端信息 写到数据库里面  
+	
+	用查找更新的方法, 防止重复数据
+	
+	根据mac 更新数据 
+	
+	根据是否存在 更新在线/离线状态  
+	
+	每一次来状态数 就要加1  
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+ 
+ 

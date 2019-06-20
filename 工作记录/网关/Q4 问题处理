@@ -1,0 +1,36 @@
+1 应用策略优先: 
+	请求: /admin/flow/ruleconfig
+	      /admin/flow/getRuleList
+
+	function get_rule_list(...)
+	local result = ruleService.getRuleListByPage(_where, pageNo, pageSize)
+	function RuleService.getRuleListByPage(_where, pageNo, pageSize) 
+
+	表:sys_rule_config 
+	select *  from sys_flow_rule_config;
+
+	show variables like 'character_set%';
+
+	$ips.error(data.message);
+	
+	$ips.error("<%: set_wan_save_failed %>")
+
+
+	$ips.succeed(data.message);
+
+	$ips.succeed("<%: set_wan_save_successfully %>");
+
+
+2  自动更新dpi 
+   platform_update_dpi
+   执行脚本
+   utils.fork_exec("update_dip.sh ")
+   /sbin/update_dip.sh
+
+    ip='wifi.zkgcloud.com'
+	port='8090'
+	path='/wacs-mana/'
+	SERVER_PATH="http://"${ip}":"${port}${path}"lic"
+
+3  恢复出厂 
+	factorydevice

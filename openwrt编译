@@ -37,3 +37,7 @@ zk_openwrt/openwrt/build_dir/target-mipsel_1004kc+dsp_uClibc-0.9.33.2$
 这两个路径编译tengine时要用到。
 
 2.2编译tengine：
+
+
+git reset --hard FETCH_HEAD
+git reset --hard HEAD@{2}
